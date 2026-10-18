@@ -1,0 +1,94 @@
+---
+import { site } from '../data/site';
+import { getTreatments, getFaqs } from '../lib/content';
+
+const treatments = await getTreatments();
+const faqs = await getFaqs();
+
+interface Props {
+  includeFaq?: boolean;
+}
+const { includeFaq = true } = Astro.props;
+
+const base = site.url.replace(/\/$/, '');
+const a = site.address;
+const clinicId = `${base}/#clinic`;
+const doctorId = `${base}/#doctor`;
+
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+const graph: Record<string, unknown>[] = [
+  {
+    '@type': 'WebSite',
+    '@id': `${base}/#website`,
+    url: `${base}/`,
+    name: site.name,
+    inLanguage: 'en-IN',
+    publisher: { '@id': clinicId },
+  },
+  {
+    '@type': ['MedicalClinic', 'Pharmacy'],
+    '@id': clinicId,
+    name: site.name,
+    url: `${base}/`,
+    description:
+      'Ayurvedic clinic and pharmacy in Byatarayanapura, Bengaluru, offering consultations, Abhyanga, Shirodhara, Panchakarma, skin care, women\'s care and weight management therapies. Online consultation is available between 1:30 PM and 5:30 PM.',
+    image: `${base}/images/hero/og-image.jpg`,
+    telephone: site.phoneTel,
+    email: site.email,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: `${a.street}, ${a.area}`,
+      addressLocality: a.city,
+      addressRegion: a.state,
+      postalCode: a.pincode,
+      addressCountry: a.country,
+    },
+    areaServed: [
+      { '@type': 'City', name: 'Bengaluru' },
+      { '@type': 'Place', name: 'Byatarayanapura' },
+      { '@type': 'Place', name: 'Amruthnagar' },
+    ],
+    openingHoursSpecification: [
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: days, opens: '10:00', closes: '13:30' },
+      { '@type': 'OpeningHoursSpecification', dayOfWeek: days, opens: '17:30', closes: '20:30' },
+    ],
+    medicalSpecialty: 'Ayurveda',
+    availableLanguage: ['English'],
+    employee: { '@id': doctorId },
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Ayurvedic therapies',
+      itemListElement: treatments.map((t) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: t.name, description: t.description },
+      })),
+    },
+  },
+  {
+    '@type': 'Physician',
+    '@id': doctorId,
+    name: site.doctor.name,
+    honorificSuffix: site.doctor.qualification,
+    jobTitle: 'Ayurvedic Physician',
+    worksFor: { '@id': clinicId },
+    knowsAbout: ['Ayurveda', 'Panchakarma', 'Abhyanga', 'Shirodhara', 'Ayurvedic skin care'],
+  },
+];
+
+if (includeFaq) {
+  graph.push({
+    '@type': 'FAQPage',
+    '@id': `${base}/#faq`,
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  });
+}
+
+const schema = { '@context': 'https://schema.org', '@graph': graph };
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

@@ -1,0 +1,19 @@
+---
+const words = ['Abhyanga', 'Shirodhara', 'Panchakarma', 'Pinda Sweda', 'Udwarthana', 'Netra Tarpana', 'Nasya', 'Swedana'];
+---
+
+<div class="mx-4 mt-6 overflow-hidden rounded-full border border-olive-700/10 bg-sand-100 py-3 sm:mx-8" aria-hidden="true">
+  <div class="marq flex w-max items-center">
+    {[...words, ...words].map((w) => (
+      <span class="mx-4 flex items-center gap-8 font-display text-lg italic text-olive-800/80 sm:text-xl">
+        {w}<span class="text-base not-italic text-gold-500">&#10022;</span>
+      </span>
+    ))}
+  </div>
+</div>
+
+<style>
+  .marq { animation: marq 40s linear infinite; }
+  @keyframes marq { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .marq { animation: none; } }
+</style>

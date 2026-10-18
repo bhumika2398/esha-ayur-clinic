@@ -1,0 +1,263 @@
+---
+import { site } from '../data/site';
+import { getReviews } from '../lib/content';
+
+const a = site.address;
+const mapQuery = encodeURIComponent(
+  `${site.name}, ${a.street}, ${a.area}, ${a.city} ${a.pincode}`
+);
+
+const topics = [
+  { label: 'Treats the root cause', n: 3 },
+  { label: 'Peaceful atmosphere', n: 2 },
+  { label: 'Attentive care', n: 2 },
+  { label: 'Good with kids', n: 2 },
+];
+
+const reviews = await getReviews();
+---
+
+<section id="testimonials" class="relative scroll-mt-20 overflow-hidden bg-sand-100 py-10 lg:py-14" aria-labelledby="testimonials-title">
+  <!-- Decorative giant quote marks -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <span class="absolute -left-6 top-4 font-display text-[22rem] leading-none text-gold-400/15">&ldquo;</span>
+    <span class="absolute -right-4 bottom-0 font-display text-[22rem] leading-none text-sage-500/15">&rdquo;</span>
+  </div>
+
+  <div class="relative mx-auto max-w-7xl px-6 lg:px-10">
+    <div class="reveal mx-auto max-w-2xl text-center">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold-500">Testimonials</p>
+      <h2 id="testimonials-title" class="mt-3 text-4xl font-semibold text-olive-800 sm:text-5xl">
+        In our patients' <span class="italic text-gold-500">own words</span>
+      </h2>
+      <p class="mt-5 text-lg leading-relaxed text-olive-700/90">
+        Kind words shared by patients in their Google reviews.
+      </p>
+    </div>
+
+    <!-- What patients mention most -->
+    <ul class="reveal mt-6 flex flex-wrap justify-center gap-3" aria-label="What patients mention most">
+      {topics.map((t) => (
+        <li class="flex items-center gap-2 rounded-full border border-gold-400/50 bg-cream-50/80 px-4 py-2 text-sm text-olive-800">
+          <span class="grid h-6 min-w-6 place-items-center rounded-full bg-olive-700 px-1.5 text-xs font-semibold text-cream-50">{t.n}</span>
+          {t.label}
+        </li>
+      ))}
+    </ul>
+
+    <!-- Featured voice -->
+    <div id="voices" class="reveal relative mx-auto mt-8 max-w-4xl" role="region" aria-roledescription="carousel" aria-label="Patient reviews">
+      <div class="relative rounded-[2.5rem] border border-gold-400/40 bg-cream-50 px-6 pb-12 pt-14 shadow-xl shadow-olive-900/10 sm:px-14">
+        <span class="absolute -top-7 left-1/2 grid h-14 w-14 -translate-x-1/2 place-items-center rounded-full bg-gold-400 font-display text-5xl leading-none text-olive-900 shadow-lg" aria-hidden="true">
+          <span class="translate-y-1">&ldquo;</span>
+        </span>
+
+        <div class="grid">
+          {reviews.map((r, i) => (
+            <figure
+              class="voice col-start-1 row-start-1 text-center"
+              data-active={i === 0 ? 'true' : 'false'}
+              aria-hidden={i === 0 ? 'false' : 'true'}
+            >
+              <blockquote class="font-display text-2xl italic leading-snug text-olive-800 sm:text-3xl">
+                &ldquo;{r.quote}&rdquo;
+              </blockquote>
+              <figcaption class="mt-8 flex items-center justify-center gap-3">
+                <span class="grid h-11 w-11 place-items-center rounded-full bg-olive-700 font-semibold text-cream-50" aria-hidden="true">
+                  {r.name.charAt(0)}
+                </span>
+                <span class="text-left">
+                  <span class="block font-semibold text-olive-800">{r.name}</span>
+                  <span class="block text-xs uppercase tracking-[0.15em] text-olive-600">Google review</span>
+                </span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+
+      <!-- Controls: leaves -->
+      <div class="mt-6 flex items-center justify-center gap-3 sm:gap-5">
+        <button id="v-prev" type="button" aria-label="Previous review" class="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-olive-700/25 text-olive-800 transition hover:border-gold-500 hover:text-gold-500">
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+        </button>
+
+        <div class="flex flex-wrap justify-center gap-1">
+          {reviews.map((r, i) => (
+            <button
+              type="button"
+              class="leaf-btn"
+              data-i={i}
+              aria-label={`Show review by ${r.name}`}
+              aria-current={i === 0 ? 'true' : 'false'}
+            >
+              <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 4C82 30 86 70 50 96C14 70 18 30 50 4Z" fill="currentColor" /></svg>
+              <span aria-hidden="true">{r.name.charAt(0)}</span>
+            </button>
+          ))}
+        </div>
+
+        <button id="v-next" type="button" aria-label="Next review" class="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-olive-700/25 text-olive-800 transition hover:border-gold-500 hover:text-gold-500">
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+        </button>
+      </div>
+      <p id="v-count" class="mt-4 text-center text-xs tracking-[0.25em] text-olive-600">01 / {String(reviews.length).padStart(2, '0')}</p>
+    </div>
+
+    <!-- Scrolling ribbon of short quotes -->
+    <div class="marquee reveal mt-8 overflow-hidden" aria-hidden="true">
+      <div class="marquee-track flex w-max">
+        {[...reviews, ...reviews].map((r) => (
+          <div class="mr-5 w-80 shrink-0 rounded-2xl border border-olive-700/10 bg-cream-50/80 p-5">
+            <p class="font-display text-xl italic leading-snug text-olive-800">&ldquo;{r.short}&rdquo;</p>
+            <p class="mt-3 text-xs font-semibold uppercase tracking-[0.15em] text-gold-500">{r.name}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="reveal mt-8 flex flex-wrap justify-center gap-4">
+      <a href="/contact#book" class="inline-flex items-center rounded-full bg-olive-700 px-8 py-3.5 font-semibold text-cream-50 transition hover:bg-olive-800">
+        Book your consultation
+      </a>
+      <a
+        href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center rounded-full border border-olive-700/40 px-8 py-3.5 font-medium text-olive-800 transition hover:border-gold-500 hover:text-gold-500"
+      >
+        Read more reviews on Google
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .voice {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    pointer-events: none;
+  }
+  .voice[data-active='true'] {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .leaf-btn {
+    position: relative;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #b9c4a6;
+    transition: transform 0.35s ease, color 0.35s ease;
+  }
+  .leaf-btn svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(35deg);
+  }
+  .leaf-btn span {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #46563a;
+  }
+  .leaf-btn:hover {
+    color: #a3b186;
+    transform: translateY(-3px) rotate(-6deg);
+  }
+  .leaf-btn[aria-current='true'] {
+    color: #c9a54a;
+    transform: scale(1.18) rotate(-8deg);
+  }
+  .leaf-btn[aria-current='true'] span {
+    color: #2b3524;
+  }
+  .leaf-btn:focus-visible {
+    outline: 2px solid #46563a;
+    outline-offset: 3px;
+    border-radius: 9999px;
+  }
+
+  .marquee {
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee-track {
+    animation: marquee 80s linear infinite;
+    will-change: transform;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track { animation: none; }
+    .marquee { overflow-x: auto; }
+    .voice { transition: none; }
+  }
+</style>
+
+<script>
+  const root = document.getElementById('voices');
+
+  if (root) {
+    const figures = Array.from(root.querySelectorAll<HTMLElement>('.voice'));
+    const leaves = Array.from(root.querySelectorAll<HTMLButtonElement>('.leaf-btn'));
+    const count = root.querySelector<HTMLElement>('#v-count');
+    const prev = root.querySelector<HTMLButtonElement>('#v-prev');
+    const next = root.querySelector<HTMLButtonElement>('#v-next');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let current = 0;
+    let timer: number | undefined;
+
+    const pad = (n: number): string => String(n).padStart(2, '0');
+
+    function show(i: number): void {
+      current = (i + figures.length) % figures.length;
+      figures.forEach((f, idx) => {
+        const on = idx === current;
+        f.dataset.active = String(on);
+        f.setAttribute('aria-hidden', String(!on));
+      });
+      leaves.forEach((l, idx) => l.setAttribute('aria-current', String(idx === current)));
+      if (count) count.textContent = `${pad(current + 1)} / ${pad(figures.length)}`;
+    }
+
+    function stop(): void {
+      if (timer !== undefined) window.clearInterval(timer);
+      timer = undefined;
+    }
+
+    function start(): void {
+      if (reduceMotion) return;
+      stop();
+      timer = window.setInterval(() => show(current + 1), 8000);
+    }
+
+    leaves.forEach((l) =>
+      l.addEventListener('click', () => {
+        show(Number(l.dataset.i));
+        start();
+      })
+    );
+    prev?.addEventListener('click', () => { show(current - 1); start(); });
+    next?.addEventListener('click', () => { show(current + 1); start(); });
+
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', start);
+    root.addEventListener('focusin', stop);
+    root.addEventListener('focusout', start);
+
+    show(0);
+    start();
+  }
+</script>

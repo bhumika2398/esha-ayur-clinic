@@ -1,0 +1,402 @@
+---
+import { site } from '../data/site';
+
+const lines = [
+  ['Ayurvedic', 'care'],
+  ['in', 'Bengaluru,'],
+  ['rooted', 'in', 'nature'],
+];
+let n = 0;
+const words = lines.map((ws) => ws.map((word) => ({ word, i: n++ })));
+
+const base = '/videos';
+const scenes = ['hero-1', 'hero-2'];
+---
+
+<section id="hero" data-scene="1" class="hero relative isolate overflow-hidden" aria-labelledby="hero-title">
+  <div class="media" aria-hidden="true">
+    {scenes.map((id, i) => (
+      <video
+        class:list={['vid', { on: i === 0 }]}
+        data-src-wide={`${base}/${id}-wide.mp4`}
+        data-src-tall={`${base}/${id}-tall.mp4`}
+        data-poster-wide={`${base}/${id}-wide.jpg`}
+        data-poster-tall={`${base}/${id}-tall.jpg`}
+        muted
+        playsinline
+        preload="auto"
+        tabindex="-1"
+      ></video>
+    ))}
+  </div>
+
+  <div class="veil veil-1" aria-hidden="true"></div>
+  <div class="veil veil-2" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="top-band" aria-hidden="true"></div>
+  <div class="light" aria-hidden="true"></div>
+
+  <div class="relative z-10 mx-auto flex min-h-[92svh] max-w-7xl items-end px-6 pb-14 pt-28 md:items-center lg:px-10">
+    <div class="copy max-w-2xl">
+      <p class="eyebrow fade flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.2em]" style="--d:100ms">
+        <span class="font-deva text-base normal-case tracking-normal">आयुर्वेद</span>
+        <span class="rule h-px w-10" aria-hidden="true"></span>
+        {site.name}
+      </p>
+
+      <h1 id="hero-title" class="ink mt-5 font-display text-4xl font-medium sm:text-6xl lg:text-[4.4rem]">
+        {words.map((ws, li) =>
+          li === 2 ? (
+            <span class="relative block w-fit">
+              {ws.map((w) => (
+                <span class="word italic accent" style={`--i:${w.i}`}>{w.word}&nbsp;</span>
+              ))}
+              <svg class="brush" viewBox="0 0 300 14" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M3 9C45 2 85 13 130 7S215 3 297 8" />
+              </svg>
+            </span>
+          ) : (
+            <span class="block">
+              {ws.map((w) => (
+                <span class="word" style={`--i:${w.i}`}>{w.word}&nbsp;</span>
+              ))}
+            </span>
+          )
+        )}
+      </h1>
+
+      <p class="ink fade mt-6 max-w-lg text-base leading-relaxed sm:text-lg" style="--d:1100ms">
+        Calm, personalised Ayurvedic therapies and medicines with {site.doctor.name} ({site.doctor.qualification}) in Byatarayanapura.
+      </p>
+
+      <div class="fade mt-8 flex flex-wrap items-center gap-x-4 gap-y-3" style="--d:1300ms">
+        <a href="/contact#book" data-magnetic class="btn-primary cta-glow inline-flex items-center rounded-full px-8 py-3.5 font-semibold">Book a Consultation</a>
+        <a href="/treatments" data-magnetic class="btn-ghost inline-flex items-center rounded-full border px-8 py-3.5 font-medium">Explore Treatments</a>
+      </div>
+
+      <p class="ink fade mt-10 text-xs leading-relaxed" style="--d:1600ms">
+        {site.doctor.name}, {site.doctor.qualification} &nbsp;&middot;&nbsp; Online consultation 1:30 to 5:30 PM
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Scene palette. Scene 1 = bright video, dark olive text. Scene 2 = dark video, cream text. */
+  .hero {
+    --fg: #2b3524;
+    --accent: #7a5c14;
+    --stroke: 184, 150, 63;
+    --btn-bg: #46563a;
+    --btn-fg: #f8f3e8;
+    --btn-hover: #364330;
+    --ghost-bg: rgba(248, 243, 232, 0.75);
+    --ghost-border: rgba(70, 86, 58, 0.55);
+    --glow: 70, 86, 58;
+    --px: 0;
+    --py: 0;
+    --lx: -400;
+    --ly: -400;
+    --light: 0;
+    background-color: #f8f3e8;
+    background-image: url('/videos/hero-1-wide.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+  @media (max-width: 767px), (orientation: portrait) {
+    .hero { background-image: url('/videos/hero-1-tall.jpg'); }
+  }
+  .hero[data-scene='2'] {
+    --fg: #f8f3e8;
+    --accent: #e0c887;
+    --stroke: 224, 200, 135;
+    --btn-bg: #c9a54a;
+    --btn-fg: #2b3524;
+    --btn-hover: #e0c887;
+    --ghost-bg: rgba(30, 40, 24, 0.45);
+    --ghost-border: rgba(248, 243, 232, 0.65);
+    --glow: 201, 165, 74;
+  }
+
+  .ink,
+  .eyebrow,
+  .word,
+  .btn-primary,
+  .btn-ghost {
+    transition: color 1.2s ease, background-color 1.2s ease, border-color 1.2s ease;
+  }
+  .ink,
+  .eyebrow { color: var(--fg); }
+  .rule { background-color: rgb(var(--stroke)); transition: background-color 1.2s ease; }
+  .accent { color: var(--accent); }
+  .btn-primary { background-color: var(--btn-bg); color: var(--btn-fg); }
+  .btn-primary:hover { background-color: var(--btn-hover); }
+  .btn-ghost { color: var(--fg); background-color: var(--ghost-bg); border-color: var(--ghost-border); }
+  .btn-ghost:hover { border-color: var(--fg); }
+
+  /* Video layer. Slightly scaled so the mouse parallax never shows an edge. */
+  .media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    transform: translate(calc(var(--px) * 1px), calc(var(--py) * 1px)) scale(1.06);
+    will-change: transform;
+  }
+  .vid {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .vid.on { z-index: 2; opacity: 1; transition: opacity 1.2s linear; }
+  .vid.out { z-index: 1; opacity: 1; }
+
+  /* Two veils cross-fade because gradients cannot be transitioned */
+  .veil,
+  .vignette,
+  .top-band,
+  .light {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .veil { transition: opacity 1.2s ease; }
+  .veil-1 { background: linear-gradient(100deg, rgba(248, 243, 232, 0.94) 0%, rgba(248, 243, 232, 0.84) 38%, rgba(248, 243, 232, 0) 68%); }
+  .veil-2 { opacity: 0; background: linear-gradient(100deg, rgba(30, 40, 24, 0.92) 0%, rgba(30, 40, 24, 0.8) 38%, rgba(30, 40, 24, 0) 68%); }
+  .hero[data-scene='2'] .veil-1 { opacity: 0; }
+  .hero[data-scene='2'] .veil-2 { opacity: 1; }
+  @media (max-width: 767px), (orientation: portrait) {
+    .veil-1 { background: linear-gradient(0deg, rgba(248, 243, 232, 0.96) 0%, rgba(248, 243, 232, 0.9) 50%, rgba(248, 243, 232, 0.4) 78%, rgba(248, 243, 232, 0) 100%); }
+    .veil-2 { background: linear-gradient(0deg, rgba(30, 40, 24, 0.96) 0%, rgba(30, 40, 24, 0.88) 50%, rgba(30, 40, 24, 0.4) 78%, rgba(30, 40, 24, 0) 100%); }
+  }
+  .vignette { background: radial-gradient(ellipse at 50% 45%, transparent 60%, rgba(43, 53, 36, 0.16) 100%); }
+  .top-band {
+    bottom: auto;
+    height: 8rem;
+    background: linear-gradient(180deg, rgba(248, 243, 232, 0.88) 0%, rgba(248, 243, 232, 0.45) 55%, rgba(248, 243, 232, 0) 100%);
+  }
+
+  /* Soft golden light that follows the cursor (desktop only) */
+  .light {
+    inset: auto;
+    left: 0;
+    top: 0;
+    width: 420px;
+    height: 420px;
+    margin: -210px 0 0 -210px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(240, 206, 110, 0.28) 0%, rgba(240, 206, 110, 0) 68%);
+    opacity: var(--light);
+    transform: translate(calc(var(--lx) * 1px), calc(var(--ly) * 1px));
+    will-change: transform;
+  }
+
+  /* Entrance animations */
+  .word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.5em);
+    animation: word 1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    animation-delay: calc(var(--i) * 110ms + 200ms);
+  }
+  @keyframes word { to { opacity: 1; transform: none; } }
+  .fade {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeup 0.9s ease-out forwards;
+    animation-delay: var(--d, 0ms);
+  }
+  @keyframes fadeup { to { opacity: 1; transform: none; } }
+
+  .brush { position: absolute; left: 0; bottom: -0.12em; width: 100%; height: 0.2em; overflow: visible; }
+  .brush path {
+    fill: none;
+    stroke: rgb(var(--stroke));
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 420;
+    stroke-dashoffset: 420;
+    animation: draw 1.6s ease-out 1.7s forwards;
+  }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  .cta-glow { animation: glow 3s ease-in-out infinite; }
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(var(--glow), 0.4); }
+    50% { box-shadow: 0 0 0 12px rgba(var(--glow), 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .word, .fade { opacity: 1; transform: none; animation: none; }
+    .brush path { animation: none; stroke-dashoffset: 0; }
+    .cta-glow { animation: none; }
+    .media { transform: none; will-change: auto; }
+  }
+</style>
+
+<script>
+  const hero = document.getElementById('hero') as HTMLElement | null;
+  if (hero) init(hero);
+
+  function init(hero: HTMLElement): void {
+    // Tweak these to taste
+    const FADE_S = 1.2; // cross-fade length in seconds (keep in sync with .vid.on transition in the CSS)
+    const PARALLAX = 12; // video layer mouse movement in px
+
+    const videos = Array.from(hero.querySelectorAll<HTMLVideoElement>('.vid'));
+    const tall = window.matchMedia('(max-width: 767px), (orientation: portrait)').matches;
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || conn?.saveData === true;
+
+    // The scene 1 poster is already the section background (CSS), so there is no blank flash
+    if (still) {
+      videos.forEach((v) => (v.hidden = true));
+      return;
+    }
+
+    // Set both sources now so both start buffering at once
+    for (const v of videos) {
+      v.poster = (tall ? v.dataset.posterTall : v.dataset.posterWide) ?? '';
+      v.src = (tall ? v.dataset.srcTall : v.dataset.srcWide) ?? '';
+      v.load();
+    }
+
+    let cur = 0;
+    let blocked = false;
+    let visible = true;
+    let tabHidden = document.hidden;
+    let raf = 0;
+    let switching = false;
+    const timers: number[] = videos.map(() => 0);
+
+    const hover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    let tx = 0;
+    let ty = 0;
+    let mx = 0;
+    let my = 0;
+    let lx = 0;
+    let ly = 0;
+    let tlx = 0;
+    let tly = 0;
+    let inside = false;
+
+    function play(v: HTMLVideoElement): void {
+      v.play().catch(() => {
+        blocked = true;
+      });
+    }
+
+    function show(next: number): void {
+      const prev = cur;
+      const nv = videos[next];
+      const pv = videos[prev];
+      window.clearTimeout(timers[next]);
+      nv.currentTime = 0;
+      nv.classList.remove('out');
+      pv.classList.remove('on');
+      pv.classList.add('out');
+      nv.classList.add('on');
+      cur = next;
+      hero.dataset.scene = String(next + 1);
+      play(nv);
+      timers[prev] = window.setTimeout(() => {
+        if (cur !== prev) {
+          pv.pause();
+          pv.classList.remove('out');
+          pv.currentTime = 0; // get it ready for its next turn
+        }
+      }, FADE_S * 1000 + 100);
+    }
+
+    function maybeSwitch(force: boolean): void {
+      if (switching) return;
+      const next = (cur + 1) % videos.length;
+      // Only switch when the next scene can play; otherwise keep the current one going and retry
+      if (videos[next].readyState >= 3 || (force && videos[next].readyState >= 2)) {
+        switching = true;
+        show(next);
+        window.setTimeout(() => { switching = false; }, FADE_S * 1000);
+      }
+    }
+
+    function frame(): void {
+      raf = requestAnimationFrame(frame);
+      const v = videos[cur];
+      if (v.duration > 0 && v.duration - v.currentTime <= FADE_S) maybeSwitch(false);
+
+      mx += (tx - mx) * 0.06;
+      my += (ty - my) * 0.06;
+      lx += (tlx - lx) * 0.15;
+      ly += (tly - ly) * 0.15;
+      hero.style.setProperty('--px', (-mx * PARALLAX).toFixed(2));
+      hero.style.setProperty('--py', (-my * PARALLAX).toFixed(2));
+      hero.style.setProperty('--lx', lx.toFixed(1));
+      hero.style.setProperty('--ly', ly.toFixed(1));
+      hero.style.setProperty('--light', inside ? '1' : '0');
+    }
+
+    function sync(): void {
+      if (visible && !tabHidden) {
+        if (!blocked && videos[cur].paused && videos[cur].readyState > 0) play(videos[cur]);
+        if (!raf) raf = requestAnimationFrame(frame);
+      } else {
+        videos.forEach((v) => v.pause());
+        if (raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      }
+    }
+
+    // If the clip ends before the cross-fade started (throttled tab, slow buffering), move on
+    videos.forEach((v, i) => v.addEventListener('ended', () => {
+      if (i !== cur) return;
+      maybeSwitch(true);
+      if (!switching) window.setTimeout(() => { if (cur === i) { v.currentTime = 0; play(v); } }, 300);
+    }));
+
+    // Autoplay blocked: start on the first tap or click anywhere in the hero
+    const unlock = (): void => {
+      if (!blocked) return;
+      blocked = false;
+      sync();
+    };
+    hero.addEventListener('pointerdown', unlock, { passive: true });
+
+    if (hover) {
+      hero.addEventListener('pointermove', (e: PointerEvent) => {
+        const r = hero.getBoundingClientRect();
+        tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+        ty = ((e.clientY - r.top) / r.height - 0.5) * 2;
+        tlx = e.clientX - r.left;
+        tly = e.clientY - r.top;
+        if (!inside) {
+          lx = tlx;
+          ly = tly;
+        }
+        inside = true;
+      });
+      hero.addEventListener('pointerleave', () => {
+        inside = false;
+        tx = 0;
+        ty = 0;
+      });
+    }
+
+    new IntersectionObserver((entries) => {
+      visible = entries[0].isIntersecting;
+      sync();
+    }).observe(hero);
+    document.addEventListener('visibilitychange', () => {
+      tabHidden = document.hidden;
+      sync();
+    });
+
+    play(videos[0]);
+    sync();
+  }
+</script>

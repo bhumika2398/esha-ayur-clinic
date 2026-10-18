@@ -1,0 +1,627 @@
+---
+import { site } from '../data/site';
+import { categoryLabels } from '../data/treatments';
+import { getTreatments } from '../lib/content';
+
+const treatments = await getTreatments();
+import type { Category } from '../data/treatments';
+
+const waNumber = site.phoneTel.replace(/\D/g, '');
+const a = site.address;
+const mapQuery = encodeURIComponent(
+  `${site.name}, ${a.street}, ${a.area}, ${a.city} ${a.pincode}`
+);
+
+interface Dept {
+  key: string;
+  label: string;
+  blurb: string;
+  icon: string;
+  options: string[];
+}
+
+const catBlurb: Record<Category, string> = {
+  body: 'Massages, dhara, basti, sweda and more',
+  skin: 'Facials for a calm, glowing complexion',
+  womens: 'Private, doctor-guided care',
+  weight: 'Udwarthana and Panchakarma programmes',
+};
+const catIcon: Record<Category, string> = {
+  body: 'M3 12c3-6 6-6 9 0s6 6 9 0',
+  skin: 'M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z',
+  womens: 'M12 8a4 4 0 100 8 4 4 0 000-8zM12 2v4M12 18v4M2 12h4M18 12h4',
+  weight: 'M12 3v18M5 7h14M5 7l-3 7a3 3 0 006 0zM19 7l-3 7a3 3 0 006 0z',
+};
+const cats = Object.keys(categoryLabels) as Category[];
+
+const depts: Dept[] = [
+  {
+    key: 'consult',
+    label: 'Doctor Consultation',
+    blurb: `Meet ${site.doctor.name} in clinic or online`,
+    icon: 'M12 3a4 4 0 100 8 4 4 0 000-8zM5 21v-1a7 7 0 0114 0v1',
+    options: ['General consultation', 'Follow-up visit', 'Not sure, help me choose'],
+  },
+  ...cats.map((c) => ({
+    key: c,
+    label: categoryLabels[c],
+    blurb: catBlurb[c],
+    icon: catIcon[c],
+    options: treatments.filter((t) => t.categories.includes(c)).map((t) => t.name),
+  })),
+];
+
+const info = [
+  {
+    label: 'Address',
+    icon: 'M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
+    lines: [`${a.street},`, `${a.area},`, `${a.city}, ${a.state} ${a.pincode}`],
+    href: '',
+  },
+  {
+    label: 'Phone',
+    icon: 'M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z',
+    lines: [site.phoneDisplay],
+    href: `tel:${site.phoneTel}`,
+  },
+  {
+    label: 'Email',
+    icon: 'M3 6h18v12H3zM3 7l9 7 9-7',
+    lines: [site.email],
+    href: `mailto:${site.email}`,
+  },
+  {
+    label: 'Timings',
+    icon: 'M12 7v5l3 2M12 3a9 9 0 100 18 9 9 0 000-18z',
+    lines: [site.hours.clinic, site.hours.online],
+    href: '',
+  },
+];
+
+const stepNames = ['Department', 'Treatment', 'Date & time', 'Details'];
+
+const inputClass =
+  'w-full rounded-xl border border-olive-700/20 bg-white/70 px-4 py-3 text-olive-800 placeholder:text-olive-600/50 focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-400/40';
+const primaryBtn =
+  'rounded-full bg-olive-700 px-7 py-3 font-semibold text-cream-50 transition hover:bg-olive-800 disabled:cursor-not-allowed disabled:opacity-40';
+const backBtn = 'text-sm font-semibold text-olive-700 transition hover:text-gold-500';
+---
+
+<section id="contact" class="relative scroll-mt-20 overflow-hidden bg-sage-100/60 py-24" aria-labelledby="contact-title">
+  <div class="mx-auto max-w-7xl px-6 lg:px-10">
+    <div class="reveal mx-auto max-w-2xl text-center">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold-500">Visit or Book Online</p>
+      <h2 id="contact-title" class="mt-3 text-4xl font-semibold text-olive-800 sm:text-5xl">
+        Begin your <span class="italic text-gold-500">healing journey</span>
+      </h2>
+      <p class="mt-5 text-lg leading-relaxed text-olive-700/90">
+        Tell us what you need and when you'd like to come. We'll confirm your slot with you.
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-10 lg:grid-cols-5">
+      <!-- Left: contact info + map -->
+      <div class="reveal space-y-6 lg:col-span-2">
+        <ul class="space-y-5">
+          {info.map((i) => (
+            <li class="flex gap-4">
+              <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-olive-700 text-gold-300">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d={i.icon} />
+                </svg>
+              </span>
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-olive-600">{i.label}</p>
+                {i.href ? (
+                  <a href={i.href} class="mt-1 block break-all text-lg font-medium text-olive-800 hover:text-gold-500">{i.lines[0]}</a>
+                ) : (
+                  i.lines.map((l) => <p class="mt-1 leading-relaxed text-olive-800">{l}</p>)
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <div class="flex flex-wrap gap-3">
+          <a
+            href={`https://wa.me/${waNumber}?text=${encodeURIComponent('Hello, I would like to know more about your clinic.')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="rounded-full bg-gold-400 px-6 py-3 text-sm font-semibold text-olive-900 transition hover:bg-gold-300"
+          >
+            Chat on WhatsApp
+          </a>
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="rounded-full border border-olive-700/40 px-6 py-3 text-sm font-medium text-olive-800 transition hover:border-gold-500 hover:text-gold-500"
+          >
+            Get directions
+          </a>
+        </div>
+
+        <div class="overflow-hidden rounded-3xl border border-olive-700/10 shadow-md">
+          <iframe
+            title={`Map showing the location of ${site.name}`}
+            src={`https://www.google.com/maps?q=${mapQuery}&output=embed`}
+            width="100%"
+            height="280"
+            style="border:0"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+
+      <!-- Right: booking form -->
+      <div id="book" class="reveal scroll-mt-24 lg:col-span-3">
+        <form
+          id="booking-form"
+          class="overflow-hidden rounded-[2rem] border border-gold-400/40 bg-cream-50 shadow-xl shadow-olive-900/10"
+          data-wa={waNumber}
+          data-email={site.email}
+          data-clinic={site.name}
+          data-hours-clinic={site.hours.clinic}
+          data-hours-online="Online consultation slots run 1:30 PM to 5:30 PM, Monday to Saturday."
+          novalidate
+        >
+          <!-- Progress -->
+          <div class="border-b border-olive-700/10 bg-sand-100/70 px-6 pb-5 pt-6 sm:px-8">
+            <ol class="flex items-center justify-between gap-2 text-xs font-medium uppercase tracking-[0.12em] text-olive-800">
+              {stepNames.map((n, i) => (
+                <li class="step-label flex items-center gap-2" data-step={i + 1} aria-current={i === 0 ? 'step' : undefined}>
+                  <span class="num grid h-7 w-7 place-items-center rounded-full border border-olive-700/30 text-[11px]">{i + 1}</span>
+                  <span class="hidden sm:inline">{n}</span>
+                </li>
+              ))}
+            </ol>
+            <div class="mt-4 h-1.5 rounded-full bg-olive-700/10">
+              <div id="bar" class="relative h-full rounded-full bg-gradient-to-r from-sage-500 to-gold-500 transition-all duration-700" style="width:25%">
+                <svg viewBox="0 0 100 100" class="absolute -right-2.5 -top-2.5 h-6 w-6 rotate-45 text-gold-500" aria-hidden="true">
+                  <path d="M50 4C82 30 86 70 50 96C14 70 18 30 50 4Z" fill="currentColor" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 sm:p-8">
+            <!-- STEP 1: Department -->
+            <div data-panel="1" class="panel step-in">
+              <h3 tabindex="-1" class="panel-title text-3xl font-semibold text-olive-800 outline-none">What do you need help with?</h3>
+              <p class="mt-2 text-olive-700/80">Choose a department to begin.</p>
+              <div class="mt-6 grid gap-3 sm:grid-cols-2">
+                {depts.map((d) => (
+                  <button
+                    type="button"
+                    data-dept={d.key}
+                    data-label={d.label}
+                    class="group flex items-start gap-4 rounded-2xl border border-olive-700/15 bg-white/60 p-4 text-left transition hover:-translate-y-0.5 hover:border-gold-500 hover:shadow-md"
+                  >
+                    <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-sage-100 text-olive-700 transition group-hover:bg-gold-300/50">
+                      <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={d.icon} /></svg>
+                    </span>
+                    <span>
+                      <span class="block font-semibold text-olive-800">{d.label}</span>
+                      <span class="mt-0.5 block text-sm text-olive-700/80">{d.blurb}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <!-- STEP 2: Treatment -->
+            <div data-panel="2" class="panel hidden">
+              <h3 tabindex="-1" class="panel-title text-3xl font-semibold text-olive-800 outline-none">Which one would you like?</h3>
+              <p id="dept-chosen" class="mt-2 text-sm font-semibold uppercase tracking-[0.15em] text-gold-500"></p>
+              {depts.map((d) => (
+                <div data-group={d.key} class="mt-6 hidden max-h-[26rem] gap-3 overflow-y-auto pr-1 sm:grid-cols-2">
+                  {d.options.map((o) => (
+                    <button
+                      type="button"
+                      data-treat={o}
+                      class="rounded-2xl border border-olive-700/15 bg-white/60 px-4 py-3.5 text-left font-medium text-olive-800 transition hover:border-gold-500 hover:bg-gold-300/20"
+                    >
+                      {o}
+                    </button>
+                  ))}
+                </div>
+              ))}
+              <div class="mt-6">
+                <button type="button" data-back="1" class={backBtn}>&larr; Back</button>
+              </div>
+            </div>
+
+            <!-- STEP 3: Date and time -->
+            <div data-panel="3" class="panel hidden">
+              <h3 tabindex="-1" class="panel-title text-3xl font-semibold text-olive-800 outline-none">Pick a date and time</h3>
+              <p id="treat-chosen" class="mt-2 text-sm font-semibold uppercase tracking-[0.15em] text-gold-500"></p>
+
+              <div id="mode-wrap" class="mt-6 hidden" role="group" aria-label="Consultation type">
+                <p class="mb-2 text-sm font-medium text-olive-800">How would you like to consult?</p>
+                <div class="grid grid-cols-2 gap-3">
+                  <button type="button" data-mode="clinic" aria-pressed="true" class="mode-btn rounded-xl border border-olive-700/20 bg-white/70 px-4 py-3 text-sm font-semibold text-olive-800 transition aria-pressed:border-olive-700 aria-pressed:bg-olive-700 aria-pressed:text-cream-50">Visit the clinic</button>
+                  <button type="button" data-mode="online" aria-pressed="false" class="mode-btn rounded-xl border border-olive-700/20 bg-white/70 px-4 py-3 text-sm font-semibold text-olive-800 transition aria-pressed:border-olive-700 aria-pressed:bg-olive-700 aria-pressed:text-cream-50">Online consultation</button>
+                </div>
+              </div>
+
+              <div class="mt-6">
+                <label for="b-date" class="mb-2 block text-sm font-medium text-olive-800">Preferred date</label>
+                <input id="b-date" type="date" class={`${inputClass} sm:max-w-xs`} />
+                <p id="date-msg" role="alert" class="mt-2 min-h-5 text-sm text-red-700"></p>
+              </div>
+
+              <div class="mt-2">
+                <p class="mb-2 text-sm font-medium text-olive-800">Available times</p>
+                <div id="slots" class="grid grid-cols-3 gap-2 sm:grid-cols-4"></div>
+                <p id="slot-note" class="mt-3 text-sm text-olive-700/80"></p>
+              </div>
+
+              <div class="mt-8 flex items-center justify-between">
+                <button type="button" data-back="2" class={backBtn}>&larr; Back</button>
+                <button type="button" id="to-details" class={primaryBtn} disabled>Continue</button>
+              </div>
+            </div>
+
+            <!-- STEP 4: Details -->
+            <div data-panel="4" class="panel hidden">
+              <h3 tabindex="-1" class="panel-title text-3xl font-semibold text-olive-800 outline-none">Your details</h3>
+
+              <dl id="summary" class="mt-5 grid gap-x-6 gap-y-2 rounded-2xl bg-sage-100/70 p-5 text-sm sm:grid-cols-2"></dl>
+
+              <div class="mt-6 grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label for="b-name" class="mb-2 block text-sm font-medium text-olive-800">Full name</label>
+                  <input id="b-name" type="text" autocomplete="name" placeholder="Your name" class={inputClass} />
+                </div>
+                <div>
+                  <label for="b-phone" class="mb-2 block text-sm font-medium text-olive-800">Phone number</label>
+                  <input id="b-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="10-digit mobile number" class={inputClass} />
+                </div>
+                <div class="sm:col-span-2">
+                  <label for="b-note" class="mb-2 block text-sm font-medium text-olive-800">Anything we should know? (optional)</label>
+                  <textarea id="b-note" rows="3" placeholder="Tell us briefly what you need help with" class={inputClass}></textarea>
+                </div>
+              </div>
+
+              <p id="form-msg" role="alert" class="mt-4 min-h-5 text-sm"></p>
+
+              <div class="mt-4 flex flex-wrap items-center justify-between gap-4">
+                <button type="button" data-back="3" class={backBtn}>&larr; Back</button>
+                <div class="flex flex-wrap gap-3">
+                  <button type="button" id="send-mail" class="rounded-full border border-olive-700/40 px-6 py-3 text-sm font-semibold text-olive-800 transition hover:border-gold-500 hover:text-gold-500">Send by email</button>
+                  <button type="button" id="send-wa" class={primaryBtn}>Confirm on WhatsApp</button>
+                </div>
+              </div>
+              <p class="mt-5 text-xs leading-relaxed text-olive-700/70">
+                Your request opens in WhatsApp or your email app, ready to send. The clinic will confirm your slot.
+                Therapies are advised after consultation and are not a substitute for medical care.
+              </p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .step-in {
+    animation: step-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  @keyframes step-in {
+    from { opacity: 0; transform: translateX(18px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .step-label {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+  }
+  .step-label[aria-current='step'],
+  .step-label.done {
+    opacity: 1;
+  }
+  .step-label[aria-current='step'] .num {
+    background: #46563a;
+    border-color: #46563a;
+    color: #f8f3e8;
+  }
+  .step-label.done .num {
+    background: #c9a54a;
+    border-color: #c9a54a;
+    color: #2b3524;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .step-in { animation: none; }
+  }
+</style>
+
+<script>
+  type Mode = 'clinic' | 'online';
+
+  const SLOTS: Record<Mode, string[]> = {
+    clinic: ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00'],
+    online: ['13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00'],
+  };
+
+  const form = document.getElementById('booking-form') as HTMLFormElement | null;
+
+  if (form) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const wa = form.dataset.wa ?? '';
+    const email = form.dataset.email ?? '';
+    const clinicName = form.dataset.clinic ?? 'the clinic';
+
+    const state = { dept: '', deptLabel: '', treatment: '', mode: 'clinic' as Mode, date: '', time: '' };
+
+    const panels = Array.from(form.querySelectorAll<HTMLElement>('[data-panel]'));
+    const stepLabels = Array.from(form.querySelectorAll<HTMLElement>('.step-label'));
+    const groups = Array.from(form.querySelectorAll<HTMLElement>('[data-group]'));
+    const modeBtns = Array.from(form.querySelectorAll<HTMLButtonElement>('.mode-btn'));
+    const bar = form.querySelector<HTMLElement>('#bar');
+    const deptChosen = form.querySelector<HTMLElement>('#dept-chosen');
+    const treatChosen = form.querySelector<HTMLElement>('#treat-chosen');
+    const modeWrap = form.querySelector<HTMLElement>('#mode-wrap');
+    const dateInput = form.querySelector<HTMLInputElement>('#b-date');
+    const dateMsg = form.querySelector<HTMLElement>('#date-msg');
+    const slotsBox = form.querySelector<HTMLElement>('#slots');
+    const slotNote = form.querySelector<HTMLElement>('#slot-note');
+    const toDetails = form.querySelector<HTMLButtonElement>('#to-details');
+    const summary = form.querySelector<HTMLElement>('#summary');
+    const nameInput = form.querySelector<HTMLInputElement>('#b-name');
+    const phoneInput = form.querySelector<HTMLInputElement>('#b-phone');
+    const noteInput = form.querySelector<HTMLTextAreaElement>('#b-note');
+    const formMsg = form.querySelector<HTMLElement>('#form-msg');
+
+    const pad = (n: number): string => String(n).padStart(2, '0');
+
+    function todayISO(): string {
+      const d = new Date();
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    }
+
+    function to12h(t: string): string {
+      const [h, m] = t.split(':').map(Number);
+      return `${h % 12 || 12}:${pad(m)} ${h >= 12 ? 'PM' : 'AM'}`;
+    }
+
+    function prettyDate(iso: string): string {
+      return new Date(`${iso}T00:00:00`).toLocaleDateString('en-IN', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+      });
+    }
+
+    function goTo(step: number): void {
+      panels.forEach((p) => p.classList.toggle('hidden', Number(p.dataset.panel) !== step));
+      stepLabels.forEach((l) => {
+        const n = Number(l.dataset.step);
+        if (n === step) l.setAttribute('aria-current', 'step');
+        else l.removeAttribute('aria-current');
+        l.classList.toggle('done', n < step);
+      });
+      if (bar) bar.style.width = `${step * 25}%`;
+
+      const panel = panels.find((p) => Number(p.dataset.panel) === step);
+      if (panel) {
+        panel.classList.remove('step-in');
+        void panel.offsetWidth;
+        panel.classList.add('step-in');
+        panel.querySelector<HTMLElement>('.panel-title')?.focus({ preventScroll: true });
+      }
+      form!.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest' });
+    }
+
+    function updateNote(): void {
+      if (slotNote) {
+        slotNote.textContent =
+          state.mode === 'online' ? form!.dataset.hoursOnline ?? '' : form!.dataset.hoursClinic ?? '';
+      }
+    }
+
+    function renderSlots(): void {
+      if (!slotsBox || !toDetails) return;
+      slotsBox.innerHTML = '';
+      state.time = '';
+      toDetails.disabled = true;
+      updateNote();
+
+      if (!state.date) {
+        const p = document.createElement('p');
+        p.className = 'col-span-full text-sm text-olive-700/70';
+        p.textContent = 'Choose a date to see available times.';
+        slotsBox.appendChild(p);
+        return;
+      }
+
+      const now = new Date();
+      const isToday = state.date === todayISO();
+      const nowMin = now.getHours() * 60 + now.getMinutes();
+      let available = 0;
+
+      SLOTS[state.mode].forEach((t) => {
+        const [h, m] = t.split(':').map(Number);
+        const past = isToday && h * 60 + m <= nowMin + 15;
+        if (!past) available += 1;
+
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = to12h(t);
+        b.dataset.time = t;
+        b.disabled = past;
+        b.setAttribute('aria-pressed', 'false');
+        b.className =
+          'rounded-xl border border-olive-700/20 bg-white/70 px-3 py-2.5 text-sm font-medium text-olive-800 transition hover:border-gold-500 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-olive-700/20 aria-pressed:border-olive-700 aria-pressed:bg-olive-700 aria-pressed:text-cream-50';
+        slotsBox.appendChild(b);
+      });
+
+      if (available === 0) {
+        const p = document.createElement('p');
+        p.className = 'col-span-full text-sm text-olive-700/70';
+        p.textContent = 'No more slots today. Please choose another date.';
+        slotsBox.appendChild(p);
+      }
+    }
+
+    function setMode(mode: Mode): void {
+      state.mode = mode;
+      modeBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+      renderSlots();
+    }
+
+    // STEP 1: department
+    form.querySelectorAll<HTMLButtonElement>('[data-dept]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.dept = btn.dataset.dept ?? '';
+        state.deptLabel = btn.dataset.label ?? '';
+        state.treatment = '';
+        if (deptChosen) deptChosen.textContent = state.deptLabel;
+        groups.forEach((g) => g.classList.toggle('hidden', g.dataset.group !== state.dept));
+        groups.forEach((g) => g.classList.toggle('grid', g.dataset.group === state.dept));
+        goTo(2);
+      });
+    });
+
+    // STEP 2: treatment
+    form.querySelectorAll<HTMLButtonElement>('[data-treat]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.treatment = btn.dataset.treat ?? '';
+        if (treatChosen) treatChosen.textContent = state.treatment;
+
+        const consult = state.dept === 'consult';
+        modeWrap?.classList.toggle('hidden', !consult);
+        if (dateInput) {
+          dateInput.min = todayISO();
+          dateInput.value = '';
+        }
+        state.date = '';
+        if (dateMsg) dateMsg.textContent = '';
+        setMode('clinic');
+        goTo(3);
+      });
+    });
+
+    // STEP 3: mode, date, time
+    modeBtns.forEach((b) => b.addEventListener('click', () => setMode((b.dataset.mode as Mode) ?? 'clinic')));
+
+    dateInput?.addEventListener('change', () => {
+      const v = dateInput.value;
+      if (dateMsg) dateMsg.textContent = '';
+      state.date = '';
+
+      if (v) {
+        if (v < todayISO()) {
+          if (dateMsg) dateMsg.textContent = 'Please choose today or a future date.';
+        } else if (new Date(`${v}T00:00:00`).getDay() === 0) {
+          if (dateMsg) dateMsg.textContent = 'We are open Monday to Saturday. Please pick another day.';
+        } else {
+          state.date = v;
+        }
+      }
+      renderSlots();
+    });
+
+    slotsBox?.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-time]');
+      if (!btn || btn.disabled) return;
+      slotsBox.querySelectorAll('button[data-time]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+      btn.setAttribute('aria-pressed', 'true');
+      state.time = btn.dataset.time ?? '';
+      if (toDetails) toDetails.disabled = !state.time;
+    });
+
+    toDetails?.addEventListener('click', () => {
+      if (!state.date || !state.time || !summary) return;
+      summary.innerHTML = '';
+      const rows: [string, string][] = [
+        ['Department', state.deptLabel],
+        ['Treatment', state.treatment],
+        ['Type', state.mode === 'online' ? 'Online consultation' : 'Clinic visit'],
+        ['Date', prettyDate(state.date)],
+        ['Time', to12h(state.time)],
+      ];
+      rows.forEach(([k, v]) => {
+        const wrap = document.createElement('div');
+        const dt = document.createElement('dt');
+        dt.className = 'text-xs font-semibold uppercase tracking-[0.12em] text-olive-600';
+        dt.textContent = k;
+        const dd = document.createElement('dd');
+        dd.className = 'font-medium text-olive-800';
+        dd.textContent = v;
+        wrap.append(dt, dd);
+        summary.appendChild(wrap);
+      });
+      goTo(4);
+    });
+
+    // Back buttons
+    form.querySelectorAll<HTMLButtonElement>('[data-back]').forEach((b) =>
+      b.addEventListener('click', () => goTo(Number(b.dataset.back)))
+    );
+
+    // STEP 4: send
+    function showMsg(text: string, ok = false): void {
+      if (!formMsg) return;
+      formMsg.textContent = text;
+      formMsg.className = `mt-4 min-h-5 text-sm ${ok ? 'text-olive-700' : 'text-red-700'}`;
+    }
+
+    function validPhone(v: string): boolean {
+      return /^(?:\+?91|0)?[6-9]\d{9}$/.test(v.replace(/[\s-]/g, ''));
+    }
+
+    function collect(): { name: string; phone: string; note: string } | null {
+      const name = nameInput?.value.trim() ?? '';
+      const phone = phoneInput?.value.trim() ?? '';
+      const note = noteInput?.value.trim() ?? '';
+      if (name.length < 2) {
+        showMsg('Please enter your name.');
+        nameInput?.focus();
+        return null;
+      }
+      if (!validPhone(phone)) {
+        showMsg('Please enter a valid 10-digit mobile number.');
+        phoneInput?.focus();
+        return null;
+      }
+      return { name, phone, note };
+    }
+
+    function buildMessage(d: { name: string; phone: string; note: string }): string {
+      const lines = [
+        `Hello ${clinicName}, I would like to request an appointment.`,
+        '',
+        `Name: ${d.name}`,
+        `Phone: ${d.phone}`,
+        `Department: ${state.deptLabel}`,
+        `Treatment: ${state.treatment}`,
+        `Type: ${state.mode === 'online' ? 'Online consultation' : 'Clinic visit'}`,
+        `Preferred date: ${prettyDate(state.date)}`,
+        `Preferred time: ${to12h(state.time)}`,
+      ];
+      if (d.note) lines.push(`Note: ${d.note}`);
+      return lines.join('\n');
+    }
+
+    form.querySelector('#send-wa')?.addEventListener('click', () => {
+      const d = collect();
+      if (!d) return;
+      const url = `https://wa.me/${wa}?text=${encodeURIComponent(buildMessage(d))}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+      showMsg('Opening WhatsApp. Please press Send there so your request reaches us.', true);
+    });
+
+    form.querySelector('#send-mail')?.addEventListener('click', () => {
+      const d = collect();
+      if (!d) return;
+      const subject = `Appointment request: ${state.treatment}`;
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(buildMessage(d))}`;
+      showMsg('Opening your email app. Please press Send there so your request reaches us.', true);
+    });
+
+    form.addEventListener('submit', (e) => e.preventDefault());
+    renderSlots();
+  }
+</script>

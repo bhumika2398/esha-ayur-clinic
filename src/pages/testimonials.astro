@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Testimonials from '../components/Testimonials.astro';
+import CTABand from '../components/CTABand.astro';
+import Footer from '../components/Footer.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+---
+
+<Layout
+  title="Patient Reviews | Esha Ayur Care, Ayurvedic Clinic in Bengaluru"
+  description="Read what patients say about Dr. Gayathri S and Esha Ayur Care in Byatarayanapura, Bengaluru, from their Google reviews."
+>
+  <Fragment slot="head">
+    <SchemaMarkup includeFaq={false} />
+  </Fragment>
+
+  <Header />
+  <main>
+    <PageHeader
+      eyebrow="Testimonials"
+      title="Kind words from"
+      accent="our patients"
+      intro="Shared by patients in their Google reviews."
+      crumb="Testimonials"
+    />
+    <Testimonials />
+    <CTABand />
+  </main>
+  <Footer />
+</Layout>

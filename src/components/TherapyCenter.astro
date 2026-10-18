@@ -1,0 +1,100 @@
+---
+import { site } from '../data/site';
+import { categoryPages } from '../data/categories';
+import { getGallery } from '../lib/content';
+
+interface Props {
+  full?: boolean;
+}
+const { full = false } = Astro.props;
+
+// Photos from the admin panel (Supabase). If there are none yet, these local photos are used.
+const local = [
+  { image: '/images/therapy-centre/therapy-room.png', caption: 'Therapy room' },
+  { image: '/images/therapy-centre/therapy-treatment.png', caption: 'Treatment area' },
+  { image: '/images/therapy-centre/therapy-1.png', caption: 'Therapy centre' },
+];
+
+const uploaded = await getGallery('therapy');
+const photos = uploaded.length ? uploaded : local;
+const list = full ? photos : photos.slice(0, 3);
+
+const altFor = (caption: string): string =>
+  caption
+    ? `${caption} at the ${site.name} therapy centre, Bengaluru`
+    : `Ayurvedic therapy at the ${site.name} therapy centre, Bengaluru`;
+---
+
+<section id="therapy-centre" class="bg-cream-50 py-10 lg:py-14" aria-labelledby="tc-title">
+  <div class="mx-auto max-w-7xl px-6 lg:px-10">
+    <div class="reveal mx-auto max-w-2xl text-center">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold-500">Therapy Centre</p>
+      <h2 id="tc-title" class="mt-3 text-4xl text-olive-800 sm:text-5xl">
+        Healing therapies, <span class="italic text-gold-500">under one roof</span>
+      </h2>
+      <p class="mt-4 text-lg leading-relaxed text-olive-700/90">
+        Alongside consultations, {site.name} runs a therapy centre where Ayurvedic therapies are given
+        after {site.doctor.name}'s assessment, with medicines available at our in-house pharmacy.
+      </p>
+    </div>
+
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {list.map((p, i) => (
+        <div class="reveal" style={`transition-delay:${(i % 3) * 100}ms`}>
+          <figure data-tilt class="tilt overflow-hidden rounded-3xl border border-olive-700/10 bg-cream-50 shadow-sm hover:shadow-xl hover:shadow-olive-900/10">
+            <div class="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-sage-100 to-sand-100">
+              <div class="img-reveal absolute inset-0">
+                <img
+                  src={p.image}
+                  alt={altFor(p.caption)}
+                  width="800"
+                  height="600"
+                  loading="lazy"
+                  decoding="async"
+                  class="tc-img h-full w-full object-cover"
+                />
+              </div>
+              <div class="tc-fallback absolute inset-0 hidden place-items-center">
+                <svg viewBox="0 0 100 100" class="h-14 w-14 text-sage-400" aria-hidden="true"><path d="M50 4C82 30 86 70 50 96C14 70 18 30 50 4Z" fill="currentColor" /></svg>
+              </div>
+            </div>
+            {p.caption && <figcaption class="px-5 py-3 text-sm font-medium text-olive-800">{p.caption}</figcaption>}
+          </figure>
+        </div>
+      ))}
+    </div>
+
+    {full && (
+      <div class="mt-10">
+        <h3 class="reveal text-center text-3xl text-olive-800">Therapies you can <span class="italic text-gold-500">book here</span></h3>
+        <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {categoryPages.map((c, i) => (
+            <a href={`/treatments/${c.slug}`} class="reveal group rounded-2xl border border-olive-700/10 bg-sage-100/50 p-5 transition hover:-translate-y-1 hover:border-gold-500 hover:bg-white hover:shadow-lg" style={`transition-delay:${i * 80}ms`}>
+              <p class="font-display text-xl font-medium text-olive-800">{c.label}</p>
+              <p class="mt-1 text-sm text-olive-700/90">{c.blurb}</p>
+              <span class="mt-3 inline-block text-sm font-semibold text-olive-700 group-hover:text-gold-500">View therapies <span aria-hidden="true">&rarr;</span></span>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {!full && (
+      <div class="reveal mt-8 flex flex-wrap justify-center gap-4">
+        <a href="/therapy-centre" data-magnetic class="inline-flex items-center rounded-full bg-olive-700 px-8 py-3.5 font-semibold text-cream-50 hover:bg-olive-800">Explore the therapy centre</a>
+        <a href="/contact#book" data-magnetic class="inline-flex items-center rounded-full border border-olive-700/40 px-8 py-3.5 font-medium text-olive-800 hover:border-gold-500 hover:text-gold-500">Book a therapy</a>
+      </div>
+    )}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLImageElement>('img.tc-img').forEach((img) => {
+    const showFallback = (): void => {
+      img.classList.add('hidden');
+      img.parentElement?.parentElement?.querySelector('.tc-fallback')?.classList.replace('hidden', 'grid');
+    };
+    img.addEventListener('error', showFallback);
+    if (img.complete && img.naturalWidth === 0) showFallback();
+  });
+</script>

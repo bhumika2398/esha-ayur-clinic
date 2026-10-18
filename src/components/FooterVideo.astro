@@ -1,0 +1,83 @@
+---
+import { site } from '../data/site';
+
+// No footer-herbs clip was found in source-videos/, so this reuses the oil-and-herbs hero clips.
+const base = '/videos';
+const a = site.address;
+const mapQuery = encodeURIComponent(`${site.name}, ${a.street}, ${a.area}, ${a.city} ${a.pincode}`);
+---
+
+<section class="mx-auto max-w-7xl px-6 pt-12 lg:px-10" aria-label="Visit us">
+  <div id="footer-video" class="reveal relative isolate overflow-hidden rounded-[2rem] bg-olive-800 text-center text-cream-50">
+    <video
+      class="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-1000"
+      muted
+      loop
+      playsinline
+      preload="none"
+      tabindex="-1"
+      aria-hidden="true"
+      data-src-wide={`${base}/hero-1-wide.mp4`}
+      data-src-tall={`${base}/hero-1-tall.mp4`}
+      data-poster-wide={`${base}/hero-1-wide.jpg`}
+      data-poster-tall={`${base}/hero-1-tall.jpg`}
+    ></video>
+    <div class="absolute inset-0 bg-olive-900/60" aria-hidden="true"></div>
+
+    <div class="relative mx-auto flex min-h-[22rem] max-w-3xl flex-col items-center justify-center px-6 py-14">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold-300">Visit us</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl">Come and see us in <span class="italic text-gold-300">Byatarayanapura</span></h2>
+      <p class="mt-4 text-cream-100">{a.area}, {a.city}</p>
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+        <a href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`} target="_blank" rel="noopener noreferrer" data-magnetic class="inline-flex items-center rounded-full border border-cream-50/70 px-8 py-3.5 font-semibold text-cream-50 hover:border-gold-300 hover:text-gold-300">Get directions</a>
+        <a href="/contact#book" data-magnetic class="inline-flex items-center rounded-full bg-gold-400 px-8 py-3.5 font-semibold text-olive-900 hover:bg-gold-300">Book a Consultation</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const box = document.getElementById('footer-video');
+  const video = box?.querySelector<HTMLVideoElement>('video') ?? null;
+
+  if (box && video) {
+    const tall = window.matchMedia('(max-width: 767px), (orientation: portrait)').matches;
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches || conn?.saveData === true;
+
+    const poster = (tall ? video.dataset.posterTall : video.dataset.posterWide) ?? '';
+    video.poster = poster;
+    // The poster sits behind the video, so the video fades in over it with no blank flash
+    box.style.backgroundImage = `url('${poster}')`;
+    box.style.backgroundSize = 'cover';
+    box.style.backgroundPosition = 'center';
+
+    if (still) {
+      video.hidden = true;
+    } else {
+      let loaded = false;
+      let visible = false;
+      video.addEventListener('canplay', () => video.classList.remove('opacity-0'), { once: true });
+
+      const load = (): void => {
+        if (loaded) return;
+        loaded = true;
+        video.src = (tall ? video.dataset.srcTall : video.dataset.srcWide) ?? '';
+        video.load();
+      };
+      const sync = (): void => {
+        if (visible && !document.hidden) video.play().catch(() => {});
+        else video.pause();
+      };
+
+      new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) load();
+      }, { rootMargin: '800px 0px' }).observe(box);
+      new IntersectionObserver((entries) => {
+        visible = entries[0].isIntersecting;
+        sync();
+      }, { threshold: 0.25 }).observe(box);
+      document.addEventListener('visibilitychange', sync);
+    }
+  }
+</script>

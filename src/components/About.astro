@@ -1,0 +1,87 @@
+---
+import { site } from '../data/site';
+
+// Put the portrait here later: public/images/clinic/dr-gayathri.jpg
+const portrait = '/images/clinic/dr-gayathri.jpg';
+---
+
+<section id="about" class="relative scroll-mt-20 overflow-hidden bg-cream-50 py-24" aria-labelledby="about-title">
+  <div class="mx-auto grid max-w-7xl items-center gap-10 px-6 lg:grid-cols-2 lg:px-10">
+    <!-- Portrait in an arch -->
+    <div class="reveal relative mx-auto w-full max-w-md">
+      <div class="absolute -inset-3 -z-10 rounded-t-[999px] rounded-b-[2rem] border border-gold-400/40"></div>
+      <div class="relative aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-3xl border border-gold-400/50 bg-gradient-to-b from-sage-100 via-sand-100 to-sage-300/60 shadow-xl shadow-olive-900/10">
+        <img
+          id="doctor-img"
+          src={portrait}
+          alt={`${site.doctor.name}, Ayurvedic doctor at ${site.name}, Bengaluru`}
+          width="800"
+          height="1000"
+          loading="lazy"
+          decoding="async"
+          class="h-full w-full object-cover"
+        />
+        <div id="doctor-fallback" class="absolute inset-0 hidden flex-col items-center justify-center gap-3 text-center">
+          <svg viewBox="0 0 100 100" class="h-20 w-20 text-sage-400" aria-hidden="true">
+            <path d="M50 4C82 30 86 70 50 96C14 70 18 30 50 4Z" fill="currentColor" />
+            <path d="M50 14V90" stroke="rgba(43,53,36,0.3)" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          <p class="px-8 text-sm text-olive-700/70">Doctor's photo will appear here</p>
+        </div>
+      </div>
+
+      <div class="absolute -bottom-6 -right-2 rounded-2xl border border-gold-400/40 bg-cream-50 px-5 py-4 shadow-lg sm:right-6">
+        <p class="font-display text-2xl font-semibold text-olive-800">{site.doctor.name}</p>
+        <p class="text-sm font-medium text-gold-500">{site.doctor.qualification}</p>
+      </div>
+    </div>
+
+    <!-- Text -->
+    <div>
+      <p class="reveal text-xs font-semibold uppercase tracking-[0.2em] text-gold-500">About the Clinic</p>
+      <h2 id="about-title" class="reveal mt-3 text-4xl font-semibold text-olive-800 sm:text-5xl" style="transition-delay:80ms">
+        Ancient wisdom, <span class="italic text-gold-500">personal care</span>
+      </h2>
+
+      <div class="reveal mt-6 space-y-5 text-lg leading-relaxed text-olive-700/90" style="transition-delay:160ms">
+        <p>
+          {site.name} is an Ayurvedic clinic and pharmacy in Byatarayanapura, Bengaluru, led by
+          {site.doctor.name} ({site.doctor.qualification}).
+        </p>
+        <p>
+          Ayurveda looks at the whole person: body, mind and daily habits. At the clinic, every visit starts
+          with a careful conversation, so the therapies and medicines suggested are planned around you,
+          not a one-size-fits-all package.
+        </p>
+        <p>
+          From soothing oil massages and Shirodhara to Panchakarma, skin care and women's care, treatments
+          are given in a calm setting, and medicines are available at our in-house pharmacy.
+        </p>
+      </div>
+
+      <dl class="reveal mt-9 grid gap-4 sm:grid-cols-2" style="transition-delay:240ms">
+        <div class="rounded-2xl border border-olive-700/10 bg-sage-100/60 p-5">
+          <dt class="text-xs font-semibold uppercase tracking-[0.15em] text-olive-600">Doctor</dt>
+          <dd class="mt-1 font-medium text-olive-800">{site.doctor.name}, {site.doctor.qualification}</dd>
+        </div>
+        <div class="rounded-2xl border border-olive-700/10 bg-sage-100/60 p-5">
+          <dt class="text-xs font-semibold uppercase tracking-[0.15em] text-olive-600">Location</dt>
+          <dd class="mt-1 font-medium text-olive-800">Byatarayanapura, Bengaluru</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<script>
+  const img = document.getElementById('doctor-img') as HTMLImageElement | null;
+  const fallback = document.getElementById('doctor-fallback');
+
+  function showFallback(): void {
+    img?.classList.add('hidden');
+    fallback?.classList.replace('hidden', 'flex');
+  }
+
+  img?.addEventListener('error', showFallback);
+  if (img && img.complete && img.naturalWidth === 0) showFallback();
+</script>

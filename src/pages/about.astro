@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageHeader from '../components/PageHeader.astro';
+import About from '../components/About.astro';
+import DoctorProfile from '../components/DoctorProfile.astro';
+import ClinicPhotos from '../components/ClinicPhotos.astro';
+import WhyChooseUs from '../components/WhyChooseUs.astro';
+import Process from '../components/Process.astro';
+import CTABand from '../components/CTABand.astro';
+import Footer from '../components/Footer.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+---
+
+<Layout
+  title="About Dr. Gayathri S & Esha Ayur Care | Ayurvedic Clinic, Bengaluru"
+  description="Meet Dr. Gayathri S (BAMS, MD) and Esha Ayur Care and Pharmacy in Byatarayanapura, Bengaluru. Personalised Ayurvedic consultations, therapies and an in-house pharmacy."
+>
+  <Fragment slot="head">
+    <SchemaMarkup includeFaq={false} />
+  </Fragment>
+
+  <Header />
+  <main>
+    <PageHeader
+      eyebrow="About Us"
+      title="Esha Ayur Care"
+      accent="and Pharmacy"
+      intro="A calm Ayurvedic clinic in Byatarayanapura, Bengaluru, led by Dr. Gayathri S (BAMS, MD)."
+      crumb="About"
+    />
+    <About />
+    <DoctorProfile />
+    <ClinicPhotos />
+    <WhyChooseUs />
+    <Process />
+    <CTABand />
+  </main>
+  <Footer />
+</Layout>

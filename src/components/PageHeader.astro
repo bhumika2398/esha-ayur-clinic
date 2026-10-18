@@ -1,0 +1,61 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  accent?: string;
+  intro?: string;
+  crumb: string;
+}
+const { eyebrow, title, accent, intro, crumb } = Astro.props;
+---
+
+<section class="relative isolate overflow-hidden bg-cream-50 px-6 pb-8 pt-32 text-center">
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <span class="ph-blob left-[-8rem] top-[-8rem] h-96 w-96 bg-sage-300"></span>
+    <span class="ph-blob bottom-[-10rem] right-[-6rem] h-96 w-96 bg-sand-300" style="animation-delay:-6s"></span>
+  </div>
+
+  <nav aria-label="Breadcrumb" class="ph-in mb-6" style="--d:0ms">
+    <ol class="flex items-center justify-center gap-2 text-sm text-olive-600">
+      <li><a href="/" class="hover:text-gold-500">Home</a></li>
+      <li aria-hidden="true">/</li>
+      <li aria-current="page" class="font-medium text-olive-800">{crumb}</li>
+    </ol>
+  </nav>
+
+  <p class="ph-in text-xs font-semibold uppercase tracking-[0.2em] text-gold-500" style="--d:100ms">{eyebrow}</p>
+  <h1 class="ph-in mx-auto mt-3 max-w-3xl text-5xl font-semibold text-olive-800 sm:text-6xl" style="--d:200ms">
+    {title}{accent && <span class="italic text-gold-500"> {accent}</span>}
+  </h1>
+  {intro && (
+    <p class="ph-in mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-olive-700/90" style="--d:320ms">{intro}</p>
+  )}
+  <div class="ph-in mx-auto mt-8 h-px w-24 bg-gradient-to-r from-transparent via-gold-500 to-transparent" style="--d:420ms" aria-hidden="true"></div>
+</section>
+
+<style>
+  .ph-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(70px);
+    opacity: 0.5;
+    animation: ph-drift 18s ease-in-out infinite alternate;
+  }
+  @keyframes ph-drift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(50px, 30px) scale(1.12); }
+  }
+  .ph-in {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: ph-fade 0.8s ease-out forwards;
+    animation-delay: var(--d, 0ms);
+  }
+  @keyframes ph-fade {
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ph-blob { animation: none; }
+    .ph-in { opacity: 1; transform: none; animation: none; }
+  }
+</style>

@@ -1,0 +1,64 @@
+---
+import { getTreatments } from '../lib/content';
+
+const treatments = await getTreatments();
+import { site } from '../data/site';
+
+const wanted = ['abhyanga', 'shirodhara', 'pinda-sweda', 'panchakarma', 'navara-facial', 'udwarthana'];
+const featured = wanted
+  .map((s) => treatments.find((t) => t.slug === s))
+  .filter((t): t is NonNullable<typeof t> => Boolean(t));
+
+const firstSentence = (text: string): string => {
+  const i = text.indexOf('. ');
+  return i === -1 ? text : text.slice(0, i + 1);
+};
+---
+
+<section class="bg-sage-100/60 py-10 lg:py-14" aria-labelledby="featured-title">
+  <div class="mx-auto max-w-7xl px-6 lg:px-10">
+    <div class="reveal mx-auto max-w-2xl text-center">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold-500">Popular Therapies</p>
+      <h2 id="featured-title" class="mt-3 text-4xl text-olive-800 sm:text-5xl">
+        Healing, <span class="italic text-gold-500">the Ayurvedic way</span>
+      </h2>
+    </div>
+
+    <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {featured.map((t, n) => (
+        <div class="reveal" style={`transition-delay:${(n % 3) * 90}ms`}>
+          <a href={`/treatments#${t.slug}`} data-tilt class="tilt group flex h-full flex-col overflow-hidden rounded-3xl border border-olive-700/10 bg-cream-50 shadow-sm hover:shadow-xl hover:shadow-olive-900/10">
+            <div class="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-sage-100 to-sand-100">
+              <div class="img-reveal absolute inset-0">
+                <img src={t.image} alt={`${t.name} at ${site.name}, Bengaluru`} width="800" height="600" loading="lazy" decoding="async" class="ft-img h-full w-full object-cover transition duration-700 group-hover:scale-110" />
+              </div>
+              <div class="ft-fallback absolute inset-0 hidden place-items-center">
+                <svg viewBox="0 0 100 100" class="h-14 w-14 text-sage-400" aria-hidden="true"><path d="M50 4C82 30 86 70 50 96C14 70 18 30 50 4Z" fill="currentColor" /></svg>
+              </div>
+            </div>
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="text-xl font-semibold text-olive-800">{t.name}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-olive-700/90">{firstSentence(t.description)}</p>
+              <span class="mt-auto pt-4 text-sm font-semibold text-olive-700 group-hover:text-gold-500">Learn more <span aria-hidden="true">&rarr;</span></span>
+            </div>
+          </a>
+        </div>
+      ))}
+    </div>
+
+    <div class="reveal mt-6 text-center">
+      <a href="/treatments" data-magnetic class="inline-flex items-center rounded-full bg-olive-700 px-8 py-3.5 font-semibold text-cream-50 hover:bg-olive-800">View all treatments</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLImageElement>('img.ft-img').forEach((img) => {
+    const showFallback = (): void => {
+      img.classList.add('hidden');
+      img.parentElement?.parentElement?.querySelector('.ft-fallback')?.classList.replace('hidden', 'grid');
+    };
+    img.addEventListener('error', showFallback);
+    if (img.complete && img.naturalWidth === 0) showFallback();
+  });
+</script>

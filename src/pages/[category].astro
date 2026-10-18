@@ -1,0 +1,30 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Treatments from '../../components/Treatments.astro';
+import CTABand from '../../components/CTABand.astro';
+import Footer from '../../components/Footer.astro';
+import SchemaMarkup from '../../components/SchemaMarkup.astro';
+import { categoryPages } from '../../data/categories';
+
+export function getStaticPaths() {
+  return categoryPages.map((page) => ({ params: { category: page.slug }, props: { page } }));
+}
+
+const { page } = Astro.props;
+---
+
+<Layout title={page.seoTitle} description={page.seoDescription}>
+  <Fragment slot="head">
+    <SchemaMarkup includeFaq={false} />
+  </Fragment>
+
+  <Header />
+  <main>
+    <PageHeader eyebrow="Our Treatments" title={page.title} accent={page.accent} intro={page.intro} crumb={page.label} />
+    <Treatments category={page.key} />
+    <CTABand />
+  </main>
+  <Footer />
+</Layout>

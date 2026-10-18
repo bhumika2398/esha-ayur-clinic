@@ -1,16 +1,37 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import TherapyMarquee from '../components/TherapyMarquee.astro';
+import HomeHighlights from '../components/HomeHighlights.astro';
+import FeaturedTreatments from '../components/FeaturedTreatments.astro';
+import TherapyCenter from '../components/TherapyCenter.astro';
+import CalmVideo from '../components/CalmVideo.astro';
+import DoctorIntro from '../components/DoctorIntro.astro';
+import QuoteTeaser from '../components/QuoteTeaser.astro';
+import FAQ from '../components/FAQ.astro';
+import QuickEnquiry from '../components/QuickEnquiry.astro';
+import Footer from '../components/Footer.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+  <Fragment slot="head">
+    <SchemaMarkup includeFaq={false} />
+  </Fragment>
+
+  <Header />
+  <main>
+    <Hero />
+    <TherapyMarquee />
+    <HomeHighlights />
+    <FeaturedTreatments />
+    <TherapyCenter />
+    <CalmVideo />
+    <DoctorIntro />
+    <QuoteTeaser />
+    <FAQ limit={5} />
+    <QuickEnquiry />
+  </main>
+  <Footer />
+</Layout>

@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageHeader from '../components/PageHeader.astro';
+import FAQ from '../components/FAQ.astro';
+import CTABand from '../components/CTABand.astro';
+import Footer from '../components/Footer.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+---
+
+<Layout
+  title="FAQ | Esha Ayur Care, Ayurvedic Clinic in Bengaluru"
+  description="Answers about Esha Ayur Care: clinic timings, online consultation, booking, Abhyanga, Shirodhara, Panchakarma, skin care, women's care and the in-house pharmacy."
+>
+  <Fragment slot="head">
+    <SchemaMarkup />
+  </Fragment>
+
+  <Header />
+  <main>
+    <PageHeader
+      eyebrow="FAQ"
+      title="Frequently asked"
+      accent="questions"
+      intro="Quick answers about the clinic, the therapies and how to book."
+      crumb="FAQ"
+    />
+    <FAQ />
+    <CTABand />
+  </main>
+  <Footer />
+</Layout>

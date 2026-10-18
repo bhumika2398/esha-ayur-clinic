@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+---
+
+<Layout title={`Page not found | ${site.name}`} description="This page could not be found.">
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+  </Fragment>
+
+  <Header />
+  <main class="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-cream-50 px-6 py-32 text-center">
+    <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+      <span class="nf-blob left-[-6rem] top-[-6rem] h-96 w-96 bg-sage-300"></span>
+      <span class="nf-blob bottom-[-8rem] right-[-4rem] h-96 w-96 bg-sand-300" style="animation-delay:-7s"></span>
+    </div>
+
+    <div class="max-w-xl">
+      <svg viewBox="0 0 100 100" class="nf-leaf mx-auto h-20 w-20 text-sage-500" aria-hidden="true">
+        <path d="M50 4C82 30 86 70 50 96C14 70 18 30 50 4Z" fill="currentColor" />
+        <path d="M50 14V90" stroke="rgba(43,53,36,0.3)" stroke-width="2" stroke-linecap="round" />
+      </svg>
+      <p class="mt-6 font-display text-8xl font-semibold text-gold-500">404</p>
+      <h1 class="mt-2 text-4xl font-semibold text-olive-800">This page has drifted away</h1>
+      <p class="mt-5 text-lg leading-relaxed text-olive-700/90">
+        The page you are looking for doesn't exist or has moved. Let's guide you back.
+      </p>
+      <div class="mt-9 flex flex-wrap justify-center gap-4">
+        <a href="/" class="inline-flex items-center rounded-full bg-olive-700 px-8 py-3.5 font-semibold text-cream-50 transition hover:bg-olive-800">Back to home</a>
+        <a href="/treatments" class="inline-flex items-center rounded-full border border-olive-700/40 px-8 py-3.5 font-medium text-olive-800 transition hover:border-gold-500 hover:text-gold-500">View treatments</a>
+        <a href={`tel:${site.phoneTel}`} class="inline-flex items-center rounded-full border border-olive-700/40 px-8 py-3.5 font-medium text-olive-800 transition hover:border-gold-500 hover:text-gold-500">Call us</a>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .nf-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(70px);
+    opacity: 0.5;
+    animation: nf-drift 16s ease-in-out infinite alternate;
+  }
+  @keyframes nf-drift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(50px, 30px) scale(1.12); }
+  }
+  .nf-leaf {
+    animation: nf-sway 5s ease-in-out infinite alternate;
+  }
+  @keyframes nf-sway {
+    from { transform: translateY(0) rotate(-14deg); }
+    to   { transform: translateY(-14px) rotate(14deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nf-blob, .nf-leaf { animation: none; }
+  }
+</style>

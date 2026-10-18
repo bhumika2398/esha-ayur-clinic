@@ -1,0 +1,37 @@
+---
+import { site } from '../data/site';
+
+const items = [
+  {
+    title: 'Doctor-led care',
+    text: `Every plan is guided by ${site.doctor.name} (${site.doctor.qualification}).`,
+    icon: 'M12 3a4 4 0 100 8 4 4 0 000-8zM5 21v-1a7 7 0 0114 0v1',
+  },
+  {
+    title: 'Therapy and pharmacy',
+    text: 'Therapies and Ayurvedic medicines, all under one roof.',
+    icon: 'M3 10l9-6 9 6v10H3zM9 20v-6h6v6',
+  },
+  {
+    title: 'Online consultation',
+    text: 'Consult online from 1:30 PM to 5:30 PM, Monday to Saturday.',
+    icon: 'M3 5h18v11H3zM8 21h8M12 16v5',
+  },
+];
+---
+
+<section class="bg-cream-50 py-8" aria-label="Highlights">
+  <div class="mx-auto grid max-w-7xl gap-6 px-6 sm:grid-cols-3 lg:px-10">
+    {items.map((i, n) => (
+      <div class="reveal flex items-start gap-4 rounded-2xl border border-olive-700/10 bg-sage-100/50 p-6" style={`transition-delay:${n * 100}ms`}>
+        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-olive-700 text-gold-300">
+          <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={i.icon} /></svg>
+        </span>
+        <div>
+          <h2 class="font-display text-2xl font-semibold text-olive-800">{i.title}</h2>
+          <p class="mt-1 leading-relaxed text-olive-700/90">{i.text}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

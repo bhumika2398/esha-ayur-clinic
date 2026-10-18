@@ -1,0 +1,34 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageHeader from '../components/PageHeader.astro';
+import TherapyCenter from '../components/TherapyCenter.astro';
+import Process from '../components/Process.astro';
+import CTABand from '../components/CTABand.astro';
+import Footer from '../components/Footer.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+---
+
+<Layout
+  title="Ayurvedic Therapy Centre in Bengaluru | Esha Ayur Care"
+  description="Ayurvedic therapy centre at Esha Ayur Care, Byatarayanapura, Bengaluru: Abhyanga, Shirodhara, Panchakarma, skin care, women's care and weight management, after a doctor's consultation."
+>
+  <Fragment slot="head">
+    <SchemaMarkup includeFaq={false} />
+  </Fragment>
+
+  <Header />
+  <main>
+    <PageHeader
+      eyebrow="Therapy Centre"
+      title="Our Ayurvedic"
+      accent="therapy centre"
+      intro="Therapies given in a calm setting, planned after your consultation with the doctor."
+      crumb="Therapy Centre"
+    />
+    <TherapyCenter full />
+    <Process />
+    <CTABand />
+  </main>
+  <Footer />
+</Layout>

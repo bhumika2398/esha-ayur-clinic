@@ -1,0 +1,125 @@
+---
+import { site } from '../data/site';
+import { categoryPages } from '../data/categories';
+
+const links = [
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'Treatments', href: '/treatments', menu: true },
+  { label: 'Therapy Centre', href: '/therapy-centre' },
+  { label: 'Testimonials', href: '/testimonials' },
+  { label: 'FAQ', href: '/faq' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const active = (href: string): boolean =>
+  href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+const linkClass = (href: string): (string | false)[] => [
+  'border-b-2 pb-1 text-sm font-medium transition hover:text-gold-500',
+  active(href) ? 'border-gold-500 text-gold-500' : 'border-transparent text-olive-800',
+];
+---
+
+<header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
+  <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
+    <a href="/" class="flex items-center gap-3" aria-label={`${site.name} home`}>
+      <span class="grid h-10 w-10 place-items-center rounded-full bg-olive-700">
+        <svg viewBox="0 0 64 64" class="h-6 w-6" aria-hidden="true">
+          <path d="M32 8c12 9 14 25 0 46C18 33 20 17 32 8Z" fill="#e0c887" />
+          <path d="M32 16v36" stroke="#46563a" stroke-width="3" stroke-linecap="round" />
+        </svg>
+      </span>
+      <span class="font-display text-2xl font-semibold leading-none text-olive-800">
+        Esha Ayur Care
+        <span class="mt-1 block font-body text-[10px] font-semibold uppercase tracking-[0.22em] text-olive-600">Clinic &amp; Pharmacy</span>
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-6 xl:flex" aria-label="Main navigation">
+      {links.map((l) =>
+        l.menu ? (
+          <div class="group relative">
+            <a href={l.href} aria-current={active(l.href) ? 'page' : undefined} class:list={[...linkClass(l.href), 'inline-flex items-center gap-1']}>
+              {l.label}
+              <svg viewBox="0 0 24 24" class="h-4 w-4 transition group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+            </a>
+            <div class="invisible absolute left-1/2 top-full z-50 w-80 -translate-x-1/2 translate-y-2 pt-4 opacity-0 transition duration-200 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              <div class="rounded-2xl border border-olive-700/10 bg-cream-50 p-3 shadow-xl shadow-olive-900/10">
+                {categoryPages.map((c) => (
+                  <a href={`/treatments/${c.slug}`} class="block rounded-xl px-4 py-3 transition hover:bg-sage-100">
+                    <span class="block font-semibold text-olive-800">{c.label}</span>
+                    <span class="block text-xs text-olive-600">{c.blurb}</span>
+                  </a>
+                ))}
+                <a href="/treatments" class="mt-2 block rounded-xl bg-olive-700 px-4 py-2.5 text-center text-sm font-semibold text-cream-50 hover:bg-olive-800">All treatments</a>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <a href={l.href} aria-current={active(l.href) ? 'page' : undefined} class:list={linkClass(l.href)}>{l.label}</a>
+        )
+      )}
+      <a href="/contact#book" class="rounded-full bg-olive-700 px-6 py-2.5 text-sm font-semibold text-cream-50 transition hover:bg-olive-800">Book Appointment</a>
+    </nav>
+
+    <button id="menu-btn" class="grid h-11 w-11 place-items-center rounded-full border border-olive-700/30 text-olive-800 xl:hidden" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path id="icon-open" d="M4 7h16M4 12h16M4 17h16" />
+        <path id="icon-close" class="hidden" d="M6 6l12 12M18 6L6 18" />
+      </svg>
+    </button>
+  </div>
+
+  <div id="mobile-menu" class="hidden max-h-[80vh] overflow-y-auto border-t border-olive-700/10 bg-cream-50/95 backdrop-blur xl:hidden">
+    <nav class="mx-auto flex max-w-7xl flex-col gap-1 px-6 py-5" aria-label="Mobile navigation">
+      {links.map((l) =>
+        l.menu ? (
+          <details class="group">
+            <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-3 py-3 text-lg font-medium text-olive-800 hover:bg-sage-100 [&::-webkit-details-marker]:hidden">
+              {l.label}
+              <svg viewBox="0 0 24 24" class="h-5 w-5 transition group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+            </summary>
+            <div class="ml-3 flex flex-col border-l border-gold-400/50 pl-3">
+              <a href="/treatments" class="mobile-link rounded-lg px-3 py-2.5 text-olive-800 hover:bg-sage-100">All treatments</a>
+              {categoryPages.map((c) => (
+                <a href={`/treatments/${c.slug}`} class="mobile-link rounded-lg px-3 py-2.5 text-olive-800 hover:bg-sage-100">{c.label}</a>
+              ))}
+            </div>
+          </details>
+        ) : (
+          <a href={l.href} class:list={['mobile-link rounded-lg px-3 py-3 text-lg font-medium hover:bg-sage-100', active(l.href) ? 'bg-sage-100 text-gold-500' : 'text-olive-800']}>{l.label}</a>
+        )
+      )}
+      <a href="/contact#book" class="mt-3 rounded-full bg-olive-700 px-6 py-3 text-center font-semibold text-cream-50">Book Appointment</a>
+      <a href={`tel:${site.phoneTel}`} class="mt-2 rounded-full border border-olive-700/30 px-6 py-3 text-center font-medium text-olive-800">Call {site.phoneDisplay}</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header');
+  const btn = document.getElementById('menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const iconOpen = document.getElementById('icon-open');
+  const iconClose = document.getElementById('icon-close');
+
+  function setScrolled(): void {
+    const s = window.scrollY > 20;
+    header?.classList.toggle('bg-cream-50/90', s);
+    header?.classList.toggle('backdrop-blur-md', s);
+    header?.classList.toggle('shadow-sm', s);
+  }
+  function setMenu(open: boolean): void {
+    menu?.classList.toggle('hidden', !open);
+    iconOpen?.classList.toggle('hidden', open);
+    iconClose?.classList.toggle('hidden', !open);
+    btn?.setAttribute('aria-expanded', String(open));
+    header?.classList.toggle('bg-cream-50', open);
+  }
+
+  btn?.addEventListener('click', () => setMenu(btn.getAttribute('aria-expanded') !== 'true'));
+  document.querySelectorAll('.mobile-link').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+  window.addEventListener('scroll', setScrolled, { passive: true });
+  setScrolled();
+</script>

@@ -1,0 +1,26 @@
+---
+import { site } from '../data/site';
+---
+
+<section class="relative overflow-hidden bg-olive-800 py-12 text-center text-cream-50" aria-labelledby="cta-title">
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="absolute -left-24 top-0 h-80 w-80 rounded-full bg-sage-500/20 blur-3xl"></div>
+    <div class="absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-gold-400/15 blur-3xl"></div>
+  </div>
+  <div class="reveal relative mx-auto max-w-2xl px-6">
+    <h2 id="cta-title" class="text-4xl font-semibold sm:text-5xl">
+      Ready to begin your <span class="italic text-gold-300">healing journey?</span>
+    </h2>
+    <p class="mt-5 text-lg leading-relaxed text-sage-100/80">
+      Book a consultation with {site.doctor.name} at the clinic or online.
+    </p>
+    <div class="mt-9 flex flex-wrap justify-center gap-4">
+      <a href="/contact#book" class="inline-flex items-center rounded-full bg-gold-400 px-8 py-3.5 font-semibold text-olive-900 transition hover:bg-gold-300">
+        Book a Consultation
+      </a>
+      <a href={`tel:${site.phoneTel}`} class="inline-flex items-center rounded-full border border-cream-100/30 px-8 py-3.5 font-medium text-cream-50 transition hover:border-gold-300 hover:text-gold-300">
+        Call {site.phoneDisplay}
+      </a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,28 @@
+# Esha Ayur Care and Pharmacy
+
+> Ayurvedic clinic and pharmacy in Byatarayanapura, Bengaluru, led by Dr. Gayathri S (BAMS, MD). Offers Ayurvedic consultations, therapies, skin care, women's care and weight management, with online consultation available.
+
+## Key facts
+- Name: Esha Ayur Care and Pharmacy
+- Doctor: Dr. Gayathri S, BAMS, MD
+- Address: Amruth Nagar Main Rd, opposite BBMP park, Sonnappa Layout, H A Farm Post, Amruthnagar, Byatarayanapura, Bengaluru, Karnataka 560024
+- Phone: +91 98805 35528
+- Email: gayathrimadhoo@gmail.com
+- Clinic hours: Monday to Saturday, 10:00 AM to 1:30 PM and 5:30 PM to 8:30 PM
+- Online consultation: Monday to Saturday, 1:30 PM to 5:30 PM
+- Pharmacy: In-house Ayurvedic pharmacy
+
+## Treatments
+- Body and head therapies: Abhyanga, Pinda Sweda, Kati/Greeva/Janu Basti, Shirodhara, Dhara therapies, Netra Tarpana, Nasya and Dhumapana, Swedana, Navara Theppu, Panchakarma, Jaloukavacharana
+- Skin care: Navara Facial, Kumkumadi Taila Facial
+- Women's care: Yoni Pichu, Yoni Prakshalana
+- Weight management: Udwarthana, Virechana, Vamana
+
+## Pages
+- Home: https://www.example.com/
+- Treatments: https://www.example.com/#treatments
+- FAQ: https://www.example.com/#faq
+- Book an appointment: https://www.example.com/#book
+
+## Notes
+Therapies are recommended after consultation with the doctor and are not a substitute for medical care. Outcomes vary from person to person.

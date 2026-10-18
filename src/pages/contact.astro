@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ContactCTA from '../components/ContactCTA.astro';
+import Footer from '../components/Footer.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+---
+
+<Layout
+  title="Book an Appointment | Esha Ayur Care, Byatarayanapura, Bengaluru"
+  description="Book a consultation or therapy at Esha Ayur Care, Amruth Nagar Main Rd, Byatarayanapura, Bengaluru 560024. Mon to Sat, with online consultation from 1:30 to 5:30 PM."
+>
+  <Fragment slot="head">
+    <SchemaMarkup includeFaq={false} />
+  </Fragment>
+
+  <Header />
+  <main>
+    <PageHeader
+      eyebrow="Contact"
+      title="Book your"
+      accent="appointment"
+      intro="Visit us in Byatarayanapura, call, or book online in a few steps."
+      crumb="Contact"
+    />
+    <ContactCTA />
+  </main>
+  <Footer />
+</Layout>

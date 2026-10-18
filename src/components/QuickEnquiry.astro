@@ -1,0 +1,77 @@
+---
+import { site } from '../data/site';
+
+const wa = site.phoneTel.replace(/\D/g, '');
+const a = site.address;
+const depts = ['Doctor Consultation', 'Body Care', 'Skin Care', "Women's Care", 'Weight Management', 'Pharmacy / Medicines'];
+const field = 'w-full rounded-xl border border-olive-700/20 bg-white/70 px-4 py-3 text-olive-800 placeholder:text-olive-600/50 focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-400/40';
+---
+
+<section id="enquiry" class="bg-sage-100/60 py-10 lg:py-14" aria-labelledby="enquiry-title">
+  <div class="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-2 lg:px-10">
+    <div class="reveal">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold-500">Get in Touch</p>
+      <h2 id="enquiry-title" class="mt-3 text-4xl text-olive-800 sm:text-5xl">
+        Let's plan your <span class="italic text-gold-500">visit</span>
+      </h2>
+      <p class="mt-5 text-lg leading-relaxed text-olive-700/90">Send a quick enquiry and the clinic will get back to you.</p>
+      <ul class="mt-8 space-y-4 text-olive-800">
+        <li><span class="block text-xs font-semibold uppercase tracking-[0.18em] text-olive-600">Phone</span><a href={`tel:${site.phoneTel}`} class="text-lg hover:text-gold-500">{site.phoneDisplay}</a></li>
+        <li><span class="block text-xs font-semibold uppercase tracking-[0.18em] text-olive-600">Email</span><a href={`mailto:${site.email}`} class="break-all hover:text-gold-500">{site.email}</a></li>
+        <li><span class="block text-xs font-semibold uppercase tracking-[0.18em] text-olive-600">Timings</span>{site.hours.clinic}<br />{site.hours.online}</li>
+        <li><span class="block text-xs font-semibold uppercase tracking-[0.18em] text-olive-600">Address</span>{a.street}, {a.area}, {a.city} {a.pincode}</li>
+      </ul>
+    </div>
+
+    <form id="enquiry-form" data-wa={wa} data-clinic={site.name} novalidate class="reveal rounded-[2rem] border border-gold-400/40 bg-cream-50 p-6 shadow-xl shadow-olive-900/10 sm:p-8">
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label for="q-name" class="mb-2 block text-sm font-medium text-olive-800">Full name</label>
+          <input id="q-name" type="text" autocomplete="name" placeholder="Your name" class={field} />
+        </div>
+        <div>
+          <label for="q-phone" class="mb-2 block text-sm font-medium text-olive-800">Phone number</label>
+          <input id="q-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="10-digit mobile number" class={field} />
+        </div>
+        <div class="sm:col-span-2">
+          <label for="q-dept" class="mb-2 block text-sm font-medium text-olive-800">Department</label>
+          <select id="q-dept" class={field}>{depts.map((d) => <option>{d}</option>)}</select>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="q-msg" class="mb-2 block text-sm font-medium text-olive-800">Message</label>
+          <textarea id="q-msg" rows="3" placeholder="Tell us what you need help with" class={field}></textarea>
+        </div>
+      </div>
+      <p id="q-note" role="alert" class="mt-3 min-h-5 text-sm text-red-700"></p>
+      <button type="button" id="q-send" class="mt-2 w-full rounded-full bg-olive-700 px-7 py-3.5 font-semibold text-cream-50 transition hover:bg-olive-800">Send on WhatsApp</button>
+      <p class="mt-4 text-center text-sm text-olive-700/80">Prefer to pick a date and time? <a href="/contact#book" class="font-semibold text-olive-700 underline-offset-4 hover:text-gold-500 hover:underline">Use the full booking form</a></p>
+    </form>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('enquiry-form') as HTMLFormElement | null;
+  if (form) {
+    const val = (id: string): string =>
+      (document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | null)?.value.trim() ?? '';
+    const note = document.getElementById('q-note');
+
+    document.getElementById('q-send')?.addEventListener('click', () => {
+      const name = val('q-name');
+      const phone = val('q-phone');
+      if (name.length < 2) { if (note) note.textContent = 'Please enter your name.'; return; }
+      if (!/^(?:\+?91|0)?[6-9]\d{9}$/.test(phone.replace(/[\s-]/g, ''))) { if (note) note.textContent = 'Please enter a valid 10-digit mobile number.'; return; }
+      if (note) note.textContent = '';
+      const lines = [
+        `Hello ${form.dataset.clinic}, I would like to make an enquiry.`,
+        '',
+        `Name: ${name}`,
+        `Phone: ${phone}`,
+        `Department: ${val('q-dept')}`,
+      ];
+      if (val('q-msg')) lines.push(`Message: ${val('q-msg')}`);
+      window.open(`https://wa.me/${form.dataset.wa}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener,noreferrer');
+    });
+    form.addEventListener('submit', (e) => e.preventDefault());
+  }
+</script>
