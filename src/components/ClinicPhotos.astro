@@ -1,18 +1,14 @@
 ---
 import { site } from '../data/site';
+import { getGallery } from '../lib/content';
 
-const photos = [
-  {
-    src: '/images/clinic/clinic-facade.png',
-    caption: 'Our clinic on Amruth Nagar Main Road',
-    alt: `${site.name} clinic entrance, Byatarayanapura, Bengaluru`,
-  },
-  {
-    src: '/images/clinic/pharmacy.png',
-    caption: 'In-house Ayurvedic pharmacy',
-    alt: `Ayurvedic pharmacy at ${site.name}, Bengaluru`,
-  },
-];
+// Photos from the admin panel (Supabase). If there are none yet, getGallery returns the local photos.
+const uploaded = await getGallery('clinic');
+const photos = uploaded.map((p) => ({
+  src: p.image,
+  caption: p.caption,
+  alt: p.caption ? `${p.caption}, ${site.name}, Bengaluru` : `${site.name} clinic and pharmacy, Byatarayanapura, Bengaluru`,
+}));
 ---
 
 <section class="bg-sage-100/60 py-10 lg:py-14" aria-labelledby="clinic-photos-title">
@@ -36,7 +32,7 @@ const photos = [
                 <svg viewBox="0 0 100 100" class="h-14 w-14 text-sage-400" aria-hidden="true"><path d="M50 4C82 30 86 70 50 96C14 70 18 30 50 4Z" fill="currentColor" /></svg>
               </div>
             </div>
-            <figcaption class="px-5 py-3 text-sm font-medium text-olive-800">{p.caption}</figcaption>
+            {p.caption && <figcaption class="px-5 py-3 text-sm font-medium text-olive-800">{p.caption}</figcaption>}
           </figure>
         </div>
       ))}

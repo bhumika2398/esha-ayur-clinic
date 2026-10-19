@@ -1,8 +1,13 @@
 ---
 import { categoryLabels } from '../data/treatments';
-import { getTreatments } from '../lib/content';
+import { getTreatments, getPriceItems } from '../lib/content';
+import { linkedPrices, fromPrice, formatINR } from '../lib/pricing';
 
 const treatments = await getTreatments();
+
+// "From" price per treatment (only when prices are shown). The linking rule is explained in src/lib/pricing.ts.
+const priceItems = site.showPrices ? await getPriceItems() : [];
+const from = new Map(treatments.map((t) => [t.slug, fromPrice(linkedPrices(t, priceItems))]));
 import type { Category } from '../data/treatments';
 import { site } from '../data/site';
 
@@ -69,9 +74,14 @@ const tabs: { key: 'all' | Category; label: string }[] = [
             <ul class="mt-5 flex flex-wrap gap-2" aria-label={`${t.name} includes`}>
               {t.includes.map((item) => <li class="rounded-full bg-sage-100 px-3 py-1 text-xs text-olive-700">{item}</li>)}
             </ul>
-            <a href="/contact#book" class="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-olive-700 transition hover:text-gold-500">
-              Book this therapy <span aria-hidden="true" class="transition group-hover:translate-x-1">&rarr;</span>
-            </a>
+            <div class="mt-auto flex flex-wrap items-center justify-between gap-3 pt-6">
+              <a href="/contact#book" class="inline-flex items-center gap-2 text-sm font-semibold text-olive-700 transition hover:text-gold-500">
+                Book this therapy <span aria-hidden="true" class="transition group-hover:translate-x-1">&rarr;</span>
+              </a>
+              {from.get(t.slug) && (
+                <a href="/pricing" class="rounded-full bg-gold-300/40 px-3 py-1 text-xs font-semibold text-olive-800 transition hover:bg-gold-300">From {formatINR(from.get(t.slug) as number)}</a>
+              )}
+            </div>
           </div>
         </article>
       ))}

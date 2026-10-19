@@ -132,7 +132,7 @@ const backBtn = 'text-sm font-semibold text-olive-700 transition hover:text-gold
             Chat on WhatsApp
           </a>
           <a
-            href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
+            href={site.mapsUrl || `https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
             target="_blank"
             rel="noopener noreferrer"
             class="rounded-full border border-olive-700/40 px-6 py-3 text-sm font-medium text-olive-800 transition hover:border-gold-500 hover:text-gold-500"
@@ -283,6 +283,7 @@ const backBtn = 'text-sm font-semibold text-olive-700 transition hover:text-gold
                   <label for="b-note" class="mb-2 block text-sm font-medium text-olive-800">Anything we should know? (optional)</label>
                   <textarea id="b-note" rows="3" placeholder="Tell us briefly what you need help with" class={inputClass}></textarea>
                 </div>
+                <input type="text" id="b-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px] h-0 w-0 opacity-0" />
               </div>
 
               <p id="form-msg" role="alert" class="mt-4 min-h-5 text-sm"></p>
@@ -297,6 +298,7 @@ const backBtn = 'text-sm font-semibold text-olive-700 transition hover:text-gold
               <p class="mt-5 text-xs leading-relaxed text-olive-700/70">
                 Your request opens in WhatsApp or your email app, ready to send. The clinic will confirm your slot.
                 Therapies are advised after consultation and are not a substitute for medical care.
+                By sending a request you agree that the clinic may store it to reply to you (<a href="/privacy" class="underline underline-offset-2 hover:text-gold-500">privacy</a>).
               </p>
             </div>
           </div>
@@ -340,6 +342,8 @@ const backBtn = 'text-sm font-semibold text-olive-700 transition hover:text-gold
 </style>
 
 <script>
+  import { submitRequest } from '../scripts/submit';
+
   type Mode = 'clinic' | 'online';
 
   const SLOTS: Record<Mode, string[]> = {
@@ -605,9 +609,26 @@ const backBtn = 'text-sm font-semibold text-olive-700 transition hover:text-gold
       return lines.join('\n');
     }
 
+    // Also store the request in the clinic's admin system (the WhatsApp or email message is still prepared as before)
+    function record(d: { name: string; phone: string; note: string }): void {
+      void submitRequest({
+        name: d.name,
+        phone: d.phone,
+        department: state.deptLabel,
+        treatment: state.treatment,
+        visitType: state.mode === 'online' ? 'Online consultation' : 'Clinic visit',
+        preferredDate: state.date,
+        preferredTime: to12h(state.time),
+        message: d.note,
+        source: 'booking-form',
+        website: form!.querySelector<HTMLInputElement>('#b-website')?.value,
+      });
+    }
+
     form.querySelector('#send-wa')?.addEventListener('click', () => {
       const d = collect();
       if (!d) return;
+      record(d);
       const url = `https://wa.me/${wa}?text=${encodeURIComponent(buildMessage(d))}`;
       window.open(url, '_blank', 'noopener,noreferrer');
       showMsg('Opening WhatsApp. Please press Send there so your request reaches us.', true);
@@ -616,6 +637,7 @@ const backBtn = 'text-sm font-semibold text-olive-700 transition hover:text-gold
     form.querySelector('#send-mail')?.addEventListener('click', () => {
       const d = collect();
       if (!d) return;
+      record(d);
       const subject = `Appointment request: ${state.treatment}`;
       window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(buildMessage(d))}`;
       showMsg('Opening your email app. Please press Send there so your request reaches us.', true);

@@ -1,9 +1,12 @@
 ---
 import { site } from '../data/site';
-import { getTreatments, getFaqs } from '../lib/content';
+import { getTreatments, getFaqs, getPriceItems } from '../lib/content';
+import { linkedPrices, fromPrice } from '../lib/pricing';
 
 const treatments = await getTreatments();
 const faqs = await getFaqs();
+// Prices are added to the Offers only when the clinic chooses to show prices on the website
+const priceItems = site.showPrices ? await getPriceItems() : [];
 
 interface Props {
   includeFaq?: boolean;
@@ -59,10 +62,14 @@ const graph: Record<string, unknown>[] = [
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: 'Ayurvedic therapies',
-      itemListElement: treatments.map((t) => ({
-        '@type': 'Offer',
-        itemOffered: { '@type': 'Service', name: t.name, description: t.description },
-      })),
+      itemListElement: treatments.map((t) => {
+        const price = fromPrice(linkedPrices(t, priceItems));
+        return {
+          '@type': 'Offer',
+          itemOffered: { '@type': 'Service', name: t.name, description: t.description },
+          ...(price ? { priceCurrency: 'INR', price: String(price) } : {}),
+        };
+      }),
     },
   },
   {

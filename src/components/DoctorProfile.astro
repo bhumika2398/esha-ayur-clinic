@@ -1,6 +1,8 @@
 ---
 import { site } from '../data/site';
-import { doctor } from '../data/doctor';
+import { getDoctor } from '../lib/content';
+
+const doctor = await getDoctor();
 
 const defaultBio = [
   `${doctor.name} leads ${site.name} in Byatarayanapura, Bengaluru, and sees patients at the clinic and online.`,

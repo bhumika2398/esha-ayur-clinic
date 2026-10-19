@@ -1,6 +1,9 @@
 ---
 import { site } from '../data/site';
-const portrait = '/images/clinic/dr-gayathri.jpg';
+import { getGallery } from '../lib/content';
+
+// Portrait from the admin panel (Supabase), or the local photo until one is uploaded
+const portrait = (await getGallery('doctor'))[0]?.image ?? '/images/clinic/dr-gayathri.jpg';
 const points = [
   `${site.doctor.qualification}, Ayurvedic physician`,
   'Consultations at the clinic and online',

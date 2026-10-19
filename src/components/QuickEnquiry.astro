@@ -41,15 +41,19 @@ const field = 'w-full rounded-xl border border-olive-700/20 bg-white/70 px-4 py-
           <label for="q-msg" class="mb-2 block text-sm font-medium text-olive-800">Message</label>
           <textarea id="q-msg" rows="3" placeholder="Tell us what you need help with" class={field}></textarea>
         </div>
+        <input type="text" id="q-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px] h-0 w-0 opacity-0" />
       </div>
       <p id="q-note" role="alert" class="mt-3 min-h-5 text-sm text-red-700"></p>
       <button type="button" id="q-send" class="mt-2 w-full rounded-full bg-olive-700 px-7 py-3.5 font-semibold text-cream-50 transition hover:bg-olive-800">Send on WhatsApp</button>
+      <p class="mt-3 text-center text-xs text-olive-700/70">By sending, you agree that the clinic may store your enquiry to reply to you (<a href="/privacy" class="underline underline-offset-2 hover:text-gold-500">privacy</a>).</p>
       <p class="mt-4 text-center text-sm text-olive-700/80">Prefer to pick a date and time? <a href="/contact#book" class="font-semibold text-olive-700 underline-offset-4 hover:text-gold-500 hover:underline">Use the full booking form</a></p>
     </form>
   </div>
 </section>
 
 <script>
+  import { submitRequest } from '../scripts/submit';
+
   const form = document.getElementById('enquiry-form') as HTMLFormElement | null;
   if (form) {
     const val = (id: string): string =>
@@ -62,6 +66,8 @@ const field = 'w-full rounded-xl border border-olive-700/20 bg-white/70 px-4 py-
       if (name.length < 2) { if (note) note.textContent = 'Please enter your name.'; return; }
       if (!/^(?:\+?91|0)?[6-9]\d{9}$/.test(phone.replace(/[\s-]/g, ''))) { if (note) note.textContent = 'Please enter a valid 10-digit mobile number.'; return; }
       if (note) note.textContent = '';
+      // Also store the enquiry in the clinic's admin system (the WhatsApp message is still prepared as before)
+      void submitRequest({ name, phone, department: val('q-dept'), message: val('q-msg'), source: 'quick-enquiry', website: val('q-website') });
       const lines = [
         `Hello ${form.dataset.clinic}, I would like to make an enquiry.`,
         '',

@@ -22,6 +22,9 @@ const linkClass = (href: string): (string | false)[] => [
 ---
 
 <header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
+  {site.announcement && (
+    <p class="bg-olive-800 px-4 py-1.5 text-center text-sm font-medium text-cream-50" role="status">{site.announcement}</p>
+  )}
   <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
     <a href="/" class="flex items-center gap-3" aria-label={`${site.name} home`}>
       <span class="grid h-10 w-10 place-items-center rounded-full bg-olive-700">
@@ -52,6 +55,10 @@ const linkClass = (href: string): (string | false)[] => [
                     <span class="block text-xs text-olive-600">{c.blurb}</span>
                   </a>
                 ))}
+                <a href="/pricing" class="block rounded-xl px-4 py-3 transition hover:bg-sage-100">
+                  <span class="block font-semibold text-olive-800">Price list</span>
+                  <span class="block text-xs text-olive-600">Session and package rates</span>
+                </a>
                 <a href="/treatments" class="mt-2 block rounded-xl bg-olive-700 px-4 py-2.5 text-center text-sm font-semibold text-cream-50 hover:bg-olive-800">All treatments</a>
               </div>
             </div>
@@ -82,6 +89,7 @@ const linkClass = (href: string): (string | false)[] => [
             </summary>
             <div class="ml-3 flex flex-col border-l border-gold-400/50 pl-3">
               <a href="/treatments" class="mobile-link rounded-lg px-3 py-2.5 text-olive-800 hover:bg-sage-100">All treatments</a>
+              <a href="/pricing" class="mobile-link rounded-lg px-3 py-2.5 text-olive-800 hover:bg-sage-100">Price list</a>
               {categoryPages.map((c) => (
                 <a href={`/treatments/${c.slug}`} class="mobile-link rounded-lg px-3 py-2.5 text-olive-800 hover:bg-sage-100">{c.label}</a>
               ))}

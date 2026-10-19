@@ -1,8 +1,12 @@
 ---
-import { getTreatments } from '../lib/content';
+import { getTreatments, getPriceItems } from '../lib/content';
+import { linkedPrices, fromPrice, formatINR } from '../lib/pricing';
+import { site } from '../data/site';
 
 const treatments = await getTreatments();
-import { site } from '../data/site';
+// "From" price per treatment (only when prices are shown). The linking rule is explained in src/lib/pricing.ts.
+const priceItems = site.showPrices ? await getPriceItems() : [];
+const fromOf = (t: (typeof treatments)[number]): number | null => fromPrice(linkedPrices(t, priceItems));
 
 const wanted = ['abhyanga', 'shirodhara', 'pinda-sweda', 'panchakarma', 'navara-facial', 'udwarthana'];
 const featured = wanted
@@ -39,7 +43,10 @@ const firstSentence = (text: string): string => {
             <div class="flex flex-1 flex-col p-5">
               <h3 class="text-xl font-semibold text-olive-800">{t.name}</h3>
               <p class="mt-2 text-sm leading-relaxed text-olive-700/90">{firstSentence(t.description)}</p>
-              <span class="mt-auto pt-4 text-sm font-semibold text-olive-700 group-hover:text-gold-500">Learn more <span aria-hidden="true">&rarr;</span></span>
+              <span class="mt-auto flex items-center justify-between gap-3 pt-4 text-sm font-semibold text-olive-700 group-hover:text-gold-500">
+                <span>Learn more <span aria-hidden="true">&rarr;</span></span>
+                {fromOf(t) && <span class="rounded-full bg-gold-300/40 px-3 py-1 text-xs text-olive-800">From {formatINR(fromOf(t) as number)}</span>}
+              </span>
             </div>
           </a>
         </div>

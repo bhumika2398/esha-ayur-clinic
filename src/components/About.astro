@@ -1,8 +1,9 @@
 ---
 import { site } from '../data/site';
+import { getGallery } from '../lib/content';
 
-// Put the portrait here later: public/images/clinic/dr-gayathri.jpg
-const portrait = '/images/clinic/dr-gayathri.jpg';
+// Portrait from the admin panel (Supabase), or the local photo until one is uploaded
+const portrait = (await getGallery('doctor'))[0]?.image ?? '/images/clinic/dr-gayathri.jpg';
 ---
 
 <section id="about" class="relative scroll-mt-20 overflow-hidden bg-cream-50 py-24" aria-labelledby="about-title">

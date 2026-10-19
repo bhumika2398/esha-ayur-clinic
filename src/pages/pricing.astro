@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PriceList from '../components/PriceList.astro';
+import CTABand from '../components/CTABand.astro';
+import Footer from '../components/Footer.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+import { site } from '../data/site';
+---
+
+<Layout
+  title="Price List | Ayurvedic Therapies in Bengaluru | Esha Ayur Care"
+  description={`Therapy prices at ${site.name}, Byatarayanapura, Bengaluru: Abhyanga, Pinda Sweda, Udwarthana, Shirodhara, Panchakarma, facials and more, with 3, 5 and 7 day package rates.`}
+>
+  <Fragment slot="head">
+    <SchemaMarkup includeFaq={false} />
+  </Fragment>
+
+  <Header />
+  <main>
+    <PageHeader
+      eyebrow="Price List"
+      title="Clear prices,"
+      accent="no surprises"
+      intro="Session and package rates for our therapies. Therapies are advised after a consultation."
+      crumb="Price list"
+    />
+    <PriceList />
+    <CTABand />
+  </main>
+  <Footer />
+</Layout>

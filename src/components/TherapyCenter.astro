@@ -8,15 +8,8 @@ interface Props {
 }
 const { full = false } = Astro.props;
 
-// Photos from the admin panel (Supabase). If there are none yet, these local photos are used.
-const local = [
-  { image: '/images/therapy-centre/therapy-room.png', caption: 'Therapy room' },
-  { image: '/images/therapy-centre/therapy-treatment.png', caption: 'Treatment area' },
-  { image: '/images/therapy-centre/therapy-1.png', caption: 'Therapy centre' },
-];
-
-const uploaded = await getGallery('therapy');
-const photos = uploaded.length ? uploaded : local;
+// Photos from the admin panel (Supabase). If there are none yet, getGallery returns the local photos.
+const photos = await getGallery('therapy');
 const list = full ? photos : photos.slice(0, 3);
 
 const altFor = (caption: string): string =>
